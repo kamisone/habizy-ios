@@ -1,0 +1,28 @@
+name: Cagnotte
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "16.0"
+targets:
+  Cagnotte:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - Cagnotte
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.cagnotte
+        SWIFT_VERSION: "5.9"
+        INFOPLIST_FILE: Cagnotte/Info.plist
+        DEVELOPMENT_TEAM: ""
+    info:
+      path: Cagnotte/Info.plist
+      properties:
+        CFBundleName: Cagnotte
+        CFBundleDisplayName: Cagnotte Coloc
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true

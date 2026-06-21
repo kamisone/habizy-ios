@@ -1,0 +1,531 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0076FDED547833CE2D5C64BF /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823C88C32BB0A849DF6BBE15 /* AuthViewModel.swift */; };
+		00771F26F36E2A96CD49C306 /* PurchaseHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B245F2BD2AE85C0D7C0695F /* PurchaseHistoryView.swift */; };
+		04D5B009728D17053786B4AD /* ShoppingRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5768F0CE789DE45A156767 /* ShoppingRepository.swift */; };
+		05582C10ADBA38742DE54E00 /* ExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6667E42BBE9A1B07D402991 /* ExpensesView.swift */; };
+		09772AEE4403283C6B774573 /* RotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484F33A2D064F2A4790D11C9 /* RotationView.swift */; };
+		0C3AF7F354C96F6E7FD9B09D /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28424EB6B52634CBE25A1B06 /* RootView.swift */; };
+		1250D4F5EE735C229F016852 /* ShoppingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD80F3117C0EA7DA6BAE2BB /* ShoppingViewModel.swift */; };
+		1B349905C0392ED607D77C15 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71A24B04B9B28364151607B8 /* ProfileViewModel.swift */; };
+		27E809BEE12390EACAB9652A /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C01F799BA6CA475E6FE13DC /* AppTheme.swift */; };
+		2E497708324F7654169A536B /* CagnotteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7448B8DED2968C2E9F048B2 /* CagnotteApp.swift */; };
+		37BD18CB6B521D9D7E1B9420 /* ExpensesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC0BFBCB219FF3566D2839A /* ExpensesViewModel.swift */; };
+		39638C85959A2C37949E529A /* RoommateAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBE226A663DCF366ABD436 /* RoommateAvatar.swift */; };
+		39DC5C645FB13CB1B52062D7 /* RotationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBACD0FDBE89AFF59816662 /* RotationViewModel.swift */; };
+		3B1A0AE8344C705D7E677216 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF43E649D39FDEC34E92B44 /* HomeView.swift */; };
+		3F141FFED923C6FDAF3323F8 /* ColocationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39170A974D5A80CCB28E6202 /* ColocationRepository.swift */; };
+		555389F449485C141A9A4073 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE0211D7E82F4FCC9100FF /* Models.swift */; };
+		5652C2C7C787EB4F56E4676B /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB5FBBD447C9FAFE8A94ED8F /* ToastView.swift */; };
+		5686447B5DB4D0E3BB56B175 /* RotationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C535405C5842A3392CFBE3E /* RotationRepository.swift */; };
+		625285D5279DA33D7C655EFD /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1B944B4598C1AB75376381 /* APIService.swift */; };
+		66BE23A359053A098AD8367F /* CreateUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94100E8F92BB5926EB7366EE /* CreateUserView.swift */; };
+		6BA4B9B5E486F7E6F2414E33 /* CompleteProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86723107E97A714A49FAF7DF /* CompleteProfileView.swift */; };
+		7A53DD0450823A461494C471 /* ShoppingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857FF2E489467F7DC41DEC89 /* ShoppingListView.swift */; };
+		7FBC6161E381CFD2223D30B6 /* AdminSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708DF1961DB91B87D53220CA /* AdminSettingsViewModel.swift */; };
+		820455CC40CD24D32E141AAF /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381E2582ED22D33BB031DD4C /* TokenManager.swift */; };
+		82D42D4CEEB2BC3E72A402DD /* MembersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBA7A60FC72F0611C762F4B /* MembersViewModel.swift */; };
+		8502F228227123D83E3435BD /* DecideForMeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C239B51A7D8561EB15E40D60 /* DecideForMeView.swift */; };
+		8697CA0825B8FA6CDCEB3C02 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5244AE774D63EDD819729D2D /* HomeViewModel.swift */; };
+		8CCC94F5D438D378AF48B711 /* AddReceiptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D942702BF00137D222836BFE /* AddReceiptView.swift */; };
+		9108688ED244EE25C5D108D5 /* ContributionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EB7704EAE07FD437BFB795 /* ContributionRepository.swift */; };
+		9198C53FEA7417CE71BB0CB9 /* AdminSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEA04FAE975C72138328B3B /* AdminSettingsView.swift */; };
+		9E301B787B3B16A65C036933 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA30099105BCBA028CE789EF /* MainTabView.swift */; };
+		9F4644D4D6E84C5289151F88 /* ReceiptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFE69F95FA71F27ECF292C2 /* ReceiptViewModel.swift */; };
+		A3DB54B90399949AE1995999 /* ContributeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2BBF833BCC76A42AC0B5F9 /* ContributeViewModel.swift */; };
+		AB99EF69818511FA06CC8CA7 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA7570135BE824C09936057 /* NotificationsView.swift */; };
+		BAFD90C867D1057E32A3C21D /* ContributeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72C800DB40BDCE9183D8218 /* ContributeView.swift */; };
+		D55151C673AB56CDC04AA104 /* ReceiptRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 928754309C6FA0078542B7BE /* ReceiptRepository.swift */; };
+		DE91D66AEBD43872D239C987 /* MembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8354BAF2672664FD9F97B0A7 /* MembersView.swift */; };
+		E1017C5BFC0AACE0810E028B /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44BCBB008F78FD2A8268E11 /* ProfileView.swift */; };
+		ECCB3CDDCFD88A469DE892B9 /* NotificationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515633E517E85E5902A89B23 /* NotificationRepository.swift */; };
+		F0FEED53B1BB165CDD628761 /* AuthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A25AC2317AF559102C955E8 /* AuthRepository.swift */; };
+		F89C7C4690D1026BE107F886 /* CreateUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EEBC7F30293587074073AC /* CreateUserViewModel.swift */; };
+		FD759D0B826B82504417D8CD /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6594F56BBF01C36F8770E36E /* LoginView.swift */; };
+		FE237AEC7E110B63C3837024 /* NotificationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BCC1BBE3F557A81DEBC447 /* NotificationsViewModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0A25AC2317AF559102C955E8 /* AuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRepository.swift; sourceTree = "<group>"; };
+		17A7DD04A3DD8584D836E045 /* Cagnotte.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Cagnotte.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		28424EB6B52634CBE25A1B06 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		29EB7704EAE07FD437BFB795 /* ContributionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContributionRepository.swift; sourceTree = "<group>"; };
+		2BA7570135BE824C09936057 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
+		31CE0211D7E82F4FCC9100FF /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		381E2582ED22D33BB031DD4C /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
+		39170A974D5A80CCB28E6202 /* ColocationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColocationRepository.swift; sourceTree = "<group>"; };
+		3BBA7A60FC72F0611C762F4B /* MembersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersViewModel.swift; sourceTree = "<group>"; };
+		484F33A2D064F2A4790D11C9 /* RotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationView.swift; sourceTree = "<group>"; };
+		4B245F2BD2AE85C0D7C0695F /* PurchaseHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseHistoryView.swift; sourceTree = "<group>"; };
+		515633E517E85E5902A89B23 /* NotificationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRepository.swift; sourceTree = "<group>"; };
+		5244AE774D63EDD819729D2D /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		6594F56BBF01C36F8770E36E /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		6C535405C5842A3392CFBE3E /* RotationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationRepository.swift; sourceTree = "<group>"; };
+		708DF1961DB91B87D53220CA /* AdminSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminSettingsViewModel.swift; sourceTree = "<group>"; };
+		71A24B04B9B28364151607B8 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		7BD80F3117C0EA7DA6BAE2BB /* ShoppingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingViewModel.swift; sourceTree = "<group>"; };
+		7CC0BFBCB219FF3566D2839A /* ExpensesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesViewModel.swift; sourceTree = "<group>"; };
+		823C88C32BB0A849DF6BBE15 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		8354BAF2672664FD9F97B0A7 /* MembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersView.swift; sourceTree = "<group>"; };
+		857FF2E489467F7DC41DEC89 /* ShoppingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListView.swift; sourceTree = "<group>"; };
+		86723107E97A714A49FAF7DF /* CompleteProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteProfileView.swift; sourceTree = "<group>"; };
+		928754309C6FA0078542B7BE /* ReceiptRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRepository.swift; sourceTree = "<group>"; };
+		94100E8F92BB5926EB7366EE /* CreateUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserView.swift; sourceTree = "<group>"; };
+		9C01F799BA6CA475E6FE13DC /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		AF5768F0CE789DE45A156767 /* ShoppingRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingRepository.swift; sourceTree = "<group>"; };
+		AF7E81887E39B71F777096A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BB5FBBD447C9FAFE8A94ED8F /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		BC1B944B4598C1AB75376381 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		C239B51A7D8561EB15E40D60 /* DecideForMeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecideForMeView.swift; sourceTree = "<group>"; };
+		C72C800DB40BDCE9183D8218 /* ContributeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContributeView.swift; sourceTree = "<group>"; };
+		C7DBE226A663DCF366ABD436 /* RoommateAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoommateAvatar.swift; sourceTree = "<group>"; };
+		CA30099105BCBA028CE789EF /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		CBBACD0FDBE89AFF59816662 /* RotationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationViewModel.swift; sourceTree = "<group>"; };
+		CBFE69F95FA71F27ECF292C2 /* ReceiptViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptViewModel.swift; sourceTree = "<group>"; };
+		CDF43E649D39FDEC34E92B44 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		D6667E42BBE9A1B07D402991 /* ExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesView.swift; sourceTree = "<group>"; };
+		D7448B8DED2968C2E9F048B2 /* CagnotteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CagnotteApp.swift; sourceTree = "<group>"; };
+		D942702BF00137D222836BFE /* AddReceiptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReceiptView.swift; sourceTree = "<group>"; };
+		E4BCC1BBE3F557A81DEBC447 /* NotificationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewModel.swift; sourceTree = "<group>"; };
+		EEEA04FAE975C72138328B3B /* AdminSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminSettingsView.swift; sourceTree = "<group>"; };
+		F44BCBB008F78FD2A8268E11 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		F7EEBC7F30293587074073AC /* CreateUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserViewModel.swift; sourceTree = "<group>"; };
+		FF2BBF833BCC76A42AC0B5F9 /* ContributeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContributeViewModel.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		09587A682B4BA194F5727C11 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				28424EB6B52634CBE25A1B06 /* RootView.swift */,
+				855E8C91021B74DCE062A98C /* Auth */,
+				887380E8B495A2DEFDE4D396 /* Components */,
+				876E2FC57CD33C271EE9EACD /* Main */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		168DE99765014E7FA30A0FCA = {
+			isa = PBXGroup;
+			children = (
+				C28EB696202AA7C0978B5B67 /* Cagnotte */,
+				203EAD60CC2B6B6ADB317A44 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		203EAD60CC2B6B6ADB317A44 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				17A7DD04A3DD8584D836E045 /* Cagnotte.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2B3F705DE8EB89C23151807A /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				0A25AC2317AF559102C955E8 /* AuthRepository.swift */,
+				39170A974D5A80CCB28E6202 /* ColocationRepository.swift */,
+				29EB7704EAE07FD437BFB795 /* ContributionRepository.swift */,
+				515633E517E85E5902A89B23 /* NotificationRepository.swift */,
+				928754309C6FA0078542B7BE /* ReceiptRepository.swift */,
+				6C535405C5842A3392CFBE3E /* RotationRepository.swift */,
+				AF5768F0CE789DE45A156767 /* ShoppingRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		46DABDBC357235826F2D56AF /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				9C01F799BA6CA475E6FE13DC /* AppTheme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		7B0F93C6E80BBD97C9EB4D0D /* App */ = {
+			isa = PBXGroup;
+			children = (
+				D7448B8DED2968C2E9F048B2 /* CagnotteApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		855E8C91021B74DCE062A98C /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				86723107E97A714A49FAF7DF /* CompleteProfileView.swift */,
+				6594F56BBF01C36F8770E36E /* LoginView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		876E2FC57CD33C271EE9EACD /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				D942702BF00137D222836BFE /* AddReceiptView.swift */,
+				EEEA04FAE975C72138328B3B /* AdminSettingsView.swift */,
+				C72C800DB40BDCE9183D8218 /* ContributeView.swift */,
+				94100E8F92BB5926EB7366EE /* CreateUserView.swift */,
+				C239B51A7D8561EB15E40D60 /* DecideForMeView.swift */,
+				D6667E42BBE9A1B07D402991 /* ExpensesView.swift */,
+				CDF43E649D39FDEC34E92B44 /* HomeView.swift */,
+				CA30099105BCBA028CE789EF /* MainTabView.swift */,
+				8354BAF2672664FD9F97B0A7 /* MembersView.swift */,
+				2BA7570135BE824C09936057 /* NotificationsView.swift */,
+				F44BCBB008F78FD2A8268E11 /* ProfileView.swift */,
+				4B245F2BD2AE85C0D7C0695F /* PurchaseHistoryView.swift */,
+				484F33A2D064F2A4790D11C9 /* RotationView.swift */,
+				857FF2E489467F7DC41DEC89 /* ShoppingListView.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		887380E8B495A2DEFDE4D396 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				C7DBE226A663DCF366ABD436 /* RoommateAvatar.swift */,
+				BB5FBBD447C9FAFE8A94ED8F /* ToastView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		B92FE87410C3843CDC9A1416 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				708DF1961DB91B87D53220CA /* AdminSettingsViewModel.swift */,
+				823C88C32BB0A849DF6BBE15 /* AuthViewModel.swift */,
+				FF2BBF833BCC76A42AC0B5F9 /* ContributeViewModel.swift */,
+				F7EEBC7F30293587074073AC /* CreateUserViewModel.swift */,
+				7CC0BFBCB219FF3566D2839A /* ExpensesViewModel.swift */,
+				5244AE774D63EDD819729D2D /* HomeViewModel.swift */,
+				3BBA7A60FC72F0611C762F4B /* MembersViewModel.swift */,
+				E4BCC1BBE3F557A81DEBC447 /* NotificationsViewModel.swift */,
+				71A24B04B9B28364151607B8 /* ProfileViewModel.swift */,
+				CBFE69F95FA71F27ECF292C2 /* ReceiptViewModel.swift */,
+				CBBACD0FDBE89AFF59816662 /* RotationViewModel.swift */,
+				7BD80F3117C0EA7DA6BAE2BB /* ShoppingViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		C28EB696202AA7C0978B5B67 /* Cagnotte */ = {
+			isa = PBXGroup;
+			children = (
+				AF7E81887E39B71F777096A8 /* Info.plist */,
+				7B0F93C6E80BBD97C9EB4D0D /* App */,
+				F8ED6C7305E4DCCEE168491A /* Data */,
+				46DABDBC357235826F2D56AF /* Theme */,
+				B92FE87410C3843CDC9A1416 /* ViewModels */,
+				09587A682B4BA194F5727C11 /* Views */,
+			);
+			path = Cagnotte;
+			sourceTree = "<group>";
+		};
+		F8ED6C7305E4DCCEE168491A /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				BC1B944B4598C1AB75376381 /* APIService.swift */,
+				31CE0211D7E82F4FCC9100FF /* Models.swift */,
+				381E2582ED22D33BB031DD4C /* TokenManager.swift */,
+				2B3F705DE8EB89C23151807A /* Repositories */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		06D94A4656A5D05911DA792F /* Cagnotte */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C371E527A24121A5C4C098B3 /* Build configuration list for PBXNativeTarget "Cagnotte" */;
+			buildPhases = (
+				B6884559629C509152D308B4 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Cagnotte;
+			packageProductDependencies = (
+			);
+			productName = Cagnotte;
+			productReference = 17A7DD04A3DD8584D836E045 /* Cagnotte.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1A63EDE8AB7F0B6CF3CA7C4E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					06D94A4656A5D05911DA792F = {
+						DevelopmentTeam = "";
+					};
+				};
+			};
+			buildConfigurationList = 6621AF336180FB9767CB9A0A /* Build configuration list for PBXProject "Cagnotte" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 168DE99765014E7FA30A0FCA;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 203EAD60CC2B6B6ADB317A44 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				06D94A4656A5D05911DA792F /* Cagnotte */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B6884559629C509152D308B4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				625285D5279DA33D7C655EFD /* APIService.swift in Sources */,
+				8CCC94F5D438D378AF48B711 /* AddReceiptView.swift in Sources */,
+				9198C53FEA7417CE71BB0CB9 /* AdminSettingsView.swift in Sources */,
+				7FBC6161E381CFD2223D30B6 /* AdminSettingsViewModel.swift in Sources */,
+				27E809BEE12390EACAB9652A /* AppTheme.swift in Sources */,
+				F0FEED53B1BB165CDD628761 /* AuthRepository.swift in Sources */,
+				0076FDED547833CE2D5C64BF /* AuthViewModel.swift in Sources */,
+				2E497708324F7654169A536B /* CagnotteApp.swift in Sources */,
+				3F141FFED923C6FDAF3323F8 /* ColocationRepository.swift in Sources */,
+				6BA4B9B5E486F7E6F2414E33 /* CompleteProfileView.swift in Sources */,
+				BAFD90C867D1057E32A3C21D /* ContributeView.swift in Sources */,
+				A3DB54B90399949AE1995999 /* ContributeViewModel.swift in Sources */,
+				9108688ED244EE25C5D108D5 /* ContributionRepository.swift in Sources */,
+				66BE23A359053A098AD8367F /* CreateUserView.swift in Sources */,
+				F89C7C4690D1026BE107F886 /* CreateUserViewModel.swift in Sources */,
+				8502F228227123D83E3435BD /* DecideForMeView.swift in Sources */,
+				05582C10ADBA38742DE54E00 /* ExpensesView.swift in Sources */,
+				37BD18CB6B521D9D7E1B9420 /* ExpensesViewModel.swift in Sources */,
+				3B1A0AE8344C705D7E677216 /* HomeView.swift in Sources */,
+				8697CA0825B8FA6CDCEB3C02 /* HomeViewModel.swift in Sources */,
+				FD759D0B826B82504417D8CD /* LoginView.swift in Sources */,
+				9E301B787B3B16A65C036933 /* MainTabView.swift in Sources */,
+				DE91D66AEBD43872D239C987 /* MembersView.swift in Sources */,
+				82D42D4CEEB2BC3E72A402DD /* MembersViewModel.swift in Sources */,
+				555389F449485C141A9A4073 /* Models.swift in Sources */,
+				ECCB3CDDCFD88A469DE892B9 /* NotificationRepository.swift in Sources */,
+				AB99EF69818511FA06CC8CA7 /* NotificationsView.swift in Sources */,
+				FE237AEC7E110B63C3837024 /* NotificationsViewModel.swift in Sources */,
+				E1017C5BFC0AACE0810E028B /* ProfileView.swift in Sources */,
+				1B349905C0392ED607D77C15 /* ProfileViewModel.swift in Sources */,
+				00771F26F36E2A96CD49C306 /* PurchaseHistoryView.swift in Sources */,
+				D55151C673AB56CDC04AA104 /* ReceiptRepository.swift in Sources */,
+				9F4644D4D6E84C5289151F88 /* ReceiptViewModel.swift in Sources */,
+				39638C85959A2C37949E529A /* RoommateAvatar.swift in Sources */,
+				0C3AF7F354C96F6E7FD9B09D /* RootView.swift in Sources */,
+				5686447B5DB4D0E3BB56B175 /* RotationRepository.swift in Sources */,
+				09772AEE4403283C6B774573 /* RotationView.swift in Sources */,
+				39DC5C645FB13CB1B52062D7 /* RotationViewModel.swift in Sources */,
+				7A53DD0450823A461494C471 /* ShoppingListView.swift in Sources */,
+				04D5B009728D17053786B4AD /* ShoppingRepository.swift in Sources */,
+				1250D4F5EE735C229F016852 /* ShoppingViewModel.swift in Sources */,
+				5652C2C7C787EB4F56E4676B /* ToastView.swift in Sources */,
+				820455CC40CD24D32E141AAF /* TokenManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5761211866905D7A975F7C3B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = Cagnotte/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.cagnotte;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		5B92598D00D1005E4B96761E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		ABC905D24CB277C0B7B34857 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = Cagnotte/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.cagnotte;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B9E8EF090112A3FEB1E2B486 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6621AF336180FB9767CB9A0A /* Build configuration list for PBXProject "Cagnotte" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B9E8EF090112A3FEB1E2B486 /* Debug */,
+				5B92598D00D1005E4B96761E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C371E527A24121A5C4C098B3 /* Build configuration list for PBXNativeTarget "Cagnotte" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABC905D24CB277C0B7B34857 /* Debug */,
+				5761211866905D7A975F7C3B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1A63EDE8AB7F0B6CF3CA7C4E /* Project object */;
+}

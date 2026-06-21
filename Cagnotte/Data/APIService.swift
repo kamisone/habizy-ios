@@ -1,0 +1,304 @@
+import Foundation
+
+// MARK: - API Error
+enum APIError: LocalizedError {
+    case invalidURL
+    case noData
+    case decodingError(String)
+    case serverError(Int, String)
+    case unauthorized
+    case unknown(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL:            return "URL invalide"
+        case .noData:                return "Aucune donnée reçue"
+        case .decodingError(let m):  return "Erreur de décodage: \(m)"
+        case .serverError(_, let m): return m
+        case .unauthorized:          return "Session expirée, veuillez vous reconnecter"
+        case .unknown(let m):        return m
+        }
+    }
+}
+
+// MARK: - Base URL Helper
+private func baseURL() -> String {
+#if DEBUG
+    return "http://localhost:4000/"
+#else
+    return "https://silomis.com/api/"
+#endif
+}
+
+// MARK: - APIService
+@MainActor
+final class APIService {
+    static let shared = APIService()
+    private let tokenManager: TokenManager
+
+    init() {
+        // Will be replaced by injected token manager via setup
+        self.tokenManager = TokenManager()
+    }
+
+    private var _tokenManager: TokenManager?
+
+    static func configure(tokenManager: TokenManager) -> APIService {
+        let svc = APIService.shared
+        svc._tokenManager = tokenManager
+        return svc
+    }
+
+    private var tm: TokenManager {
+        _tokenManager ?? tokenManager
+    }
+
+    // MARK: - Core Request
+    private func request<T: Decodable>(
+        _ path: String,
+        method: String = "GET",
+        body: (any Encodable)? = nil,
+        auth: Bool = true,
+        retryOnUnauthorized: Bool = true
+    ) async throws -> T {
+        guard let url = URL(string: baseURL() + path) else {
+            throw APIError.invalidURL
+        }
+        var req = URLRequest(url: url)
+        req.httpMethod = method
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        if auth, let token = tm.accessToken {
+            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        if let body {
+            req.httpBody = try JSONEncoder().encode(body)
+        }
+
+        let (data, response) = try await URLSession.shared.data(for: req)
+        let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+
+        if statusCode == 401 && retryOnUnauthorized && auth {
+            // Try refresh
+            let refreshed = try? await refreshTokens()
+            if refreshed == true {
+                return try await request(path, method: method, body: body, auth: auth, retryOnUnauthorized: false)
+            } else {
+                tm.clear()
+                throw APIError.unauthorized
+            }
+        }
+
+        if statusCode >= 400 {
+            let msg = extractErrorMessage(data: data) ?? "Erreur \(statusCode)"
+            throw APIError.serverError(statusCode, msg)
+        }
+
+        if data.isEmpty {
+            // For Void responses
+            if T.self == EmptyResponse.self {
+                return EmptyResponse() as! T
+            }
+        }
+
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode(T.self, from: data)
+        } catch {
+            throw APIError.decodingError(error.localizedDescription)
+        }
+    }
+
+    private func requestVoid(
+        _ path: String,
+        method: String = "GET",
+        body: (any Encodable)? = nil,
+        auth: Bool = true,
+        retryOnUnauthorized: Bool = true
+    ) async throws {
+        guard let url = URL(string: baseURL() + path) else {
+            throw APIError.invalidURL
+        }
+        var req = URLRequest(url: url)
+        req.httpMethod = method
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        if auth, let token = tm.accessToken {
+            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        if let body {
+            req.httpBody = try JSONEncoder().encode(body)
+        }
+
+        let (data, response) = try await URLSession.shared.data(for: req)
+        let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+
+        if statusCode == 401 && retryOnUnauthorized && auth {
+            let refreshed = try? await refreshTokens()
+            if refreshed == true {
+                try await requestVoid(path, method: method, body: body, auth: auth, retryOnUnauthorized: false)
+                return
+            } else {
+                tm.clear()
+                throw APIError.unauthorized
+            }
+        }
+
+        if statusCode >= 400 {
+            let msg = extractErrorMessage(data: data) ?? "Erreur \(statusCode)"
+            throw APIError.serverError(statusCode, msg)
+        }
+    }
+
+    private func refreshTokens() async throws -> Bool {
+        guard let refresh = tm.refreshToken else { return false }
+        guard let url = URL(string: baseURL() + "auth/refresh") else { return false }
+
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.httpBody = try JSONEncoder().encode(RefreshTokenRequest(refreshToken: refresh))
+
+        let (data, response) = try await URLSession.shared.data(for: req)
+        let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        guard status < 400 else { return false }
+
+        let authResp = try JSONDecoder().decode(AuthResponse.self, from: data)
+        tm.saveTokens(accessToken: authResp.accessToken, refreshToken: authResp.refreshToken)
+        return true
+    }
+
+    private func extractErrorMessage(data: Data) -> String? {
+        guard !data.isEmpty else { return nil }
+        if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            if let msg = json["message"] as? String { return msg }
+            if let msgs = json["message"] as? [String] { return msgs.first }
+        }
+        return nil
+    }
+
+    // MARK: - Auth Endpoints
+
+    func register(body: RegisterRequest) async throws -> CreateUserResponse {
+        try await request("auth/register", method: "POST", body: body, auth: false)
+    }
+
+    func login(body: LoginRequest) async throws -> AuthResponse {
+        try await request("auth/login", method: "POST", body: body, auth: false)
+    }
+
+    func changePassword(body: ChangePasswordRequest) async throws {
+        try await requestVoid("auth/change-password", method: "POST", body: body)
+    }
+
+    func getMe() async throws -> UserResponse {
+        try await request("auth/me")
+    }
+
+    func deleteMe() async throws {
+        try await requestVoid("auth/me", method: "DELETE")
+    }
+
+    func completeProfile(body: CompleteProfileRequest) async throws -> AuthResponse {
+        try await request("auth/profile", method: "PATCH", body: body)
+    }
+
+    // MARK: - Colocation Endpoints
+
+    func createColocation(body: CreateColocationRequest) async throws -> ColocationResponse {
+        try await request("colocations", method: "POST", body: body)
+    }
+
+    func getMyColocation() async throws -> ColocationDetailResponse {
+        try await request("colocations/mine")
+    }
+
+    func joinColocation(body: JoinColocationRequest) async throws -> AuthResponse {
+        try await request("colocations/join", method: "POST", body: body, auth: false)
+    }
+
+    func updateColocation(id: String, body: UpdateColocationRequest) async throws -> ColocationResponse {
+        try await request("colocations/\(id)", method: "PATCH", body: body)
+    }
+
+    func addMember(colocationId: String, body: AddMemberRequest) async throws -> CreateUserResponse {
+        try await request("colocations/\(colocationId)/members", method: "POST", body: body)
+    }
+
+    func removeMember(colocationId: String, userId: String) async throws {
+        try await requestVoid("colocations/\(colocationId)/members/\(userId)", method: "DELETE")
+    }
+
+    func getBalance(colocationId: String) async throws -> BalanceResponse {
+        try await request("colocations/\(colocationId)/balance")
+    }
+
+    // MARK: - Contribution Endpoints
+
+    func createContribution(body: CreateContributionRequest) async throws -> ContributionResponse {
+        try await request("contributions", method: "POST", body: body)
+    }
+
+    func getCycleStatus(colocationId: String) async throws -> CycleStatusResponse {
+        try await request("contributions/cycle/\(colocationId)")
+    }
+
+    // MARK: - Shopping Endpoints
+
+    func getShoppingList(colocationId: String) async throws -> [ShoppingItemResponse] {
+        try await request("shopping/\(colocationId)")
+    }
+
+    func createShoppingItem(body: CreateShoppingItemRequest) async throws -> ShoppingItemResponse {
+        try await request("shopping", method: "POST", body: body)
+    }
+
+    func toggleShoppingItem(id: String) async throws -> ShoppingItemResponse {
+        try await request("shopping/\(id)/toggle", method: "PATCH")
+    }
+
+    func deleteShoppingItem(id: String) async throws {
+        try await requestVoid("shopping/\(id)", method: "DELETE")
+    }
+
+    // MARK: - Receipt Endpoints
+
+    func createReceipt(body: CreateReceiptRequest) async throws -> ReceiptResponse {
+        try await request("receipts", method: "POST", body: body)
+    }
+
+    func getReceipts(colocationId: String) async throws -> [ReceiptResponse] {
+        try await request("receipts/\(colocationId)")
+    }
+
+    func getExpenseStats(colocationId: String) async throws -> ExpenseStatsResponse {
+        try await request("receipts/\(colocationId)/stats")
+    }
+
+    // MARK: - Rotation Endpoints
+
+    func getRotation(colocationId: String) async throws -> [RotationEntryResponse] {
+        try await request("rotations/\(colocationId)")
+    }
+
+    func generateRotation(colocationId: String) async throws -> [RotationEntryResponse] {
+        try await request("rotations/\(colocationId)/generate", method: "POST")
+    }
+
+    func swapRotation(body: SwapRotationRequest) async throws -> [RotationEntryResponse] {
+        try await request("rotations/swap", method: "PATCH", body: body)
+    }
+
+    // MARK: - Notification Endpoints
+
+    func getNotifications() async throws -> [NotificationResponse] {
+        try await request("notifications")
+    }
+
+    func markNotificationRead(id: String) async throws {
+        try await requestVoid("notifications/\(id)/read", method: "PATCH")
+    }
+}
+
+// Sentinel type for void responses
+struct EmptyResponse: Decodable {}
