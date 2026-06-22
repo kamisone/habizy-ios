@@ -299,6 +299,10 @@ final class APIService {
         try await request("catalog/\(colocationId)")
     }
 
+    func getCatalogCategories(colocationId: String) async throws -> [String] {
+        try await request("catalog/\(colocationId)/categories")
+    }
+
     func createCatalogArticle(body: CreateCatalogArticleRequest) async throws -> CatalogArticle {
         try await request("catalog", method: "POST", body: body)
     }
@@ -329,6 +333,46 @@ final class APIService {
 
     func markNotificationRead(id: String) async throws {
         try await requestVoid("notifications/\(id)/read", method: "PATCH")
+    }
+
+    // MARK: - Report Endpoints
+
+    func getReports(colocationId: String, tag: String? = nil) async throws -> [ReportResponse] {
+        var path = "reports/\(colocationId)"
+        if let tag { path += "?tag=\(tag)" }
+        return try await request(path)
+    }
+
+    func createReport(body: CreateReportRequest) async throws -> ReportResponse {
+        try await request("reports", method: "POST", body: body)
+    }
+
+    func getReportDetail(id: String) async throws -> ReportDetailResponse {
+        try await request("reports/\(id)/detail")
+    }
+
+    func createReportComment(id: String, content: String) async throws -> ReportCommentResponse {
+        try await request("reports/\(id)/comments", method: "POST", body: CreateReportCommentRequest(content: content))
+    }
+
+    func updateReport(id: String, body: UpdateReportRequest) async throws -> ReportDetailResponse {
+        try await request("reports/\(id)", method: "PATCH", body: body)
+    }
+
+    func deleteReport(id: String) async throws {
+        try await requestVoid("reports/\(id)", method: "DELETE")
+    }
+
+    func getReportTags(colocationId: String) async throws -> [ReportTagResponse] {
+        try await request("reports/tags/\(colocationId)")
+    }
+
+    func createReportTag(body: CreateTagRequest) async throws -> ReportTagResponse {
+        try await request("reports/tags", method: "POST", body: body)
+    }
+
+    func deleteReportTag(id: String) async throws {
+        try await requestVoid("reports/tags/\(id)", method: "DELETE")
     }
 }
 

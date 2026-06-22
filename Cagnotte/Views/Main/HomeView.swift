@@ -8,6 +8,7 @@ struct HomeView: View {
     @State private var showShopping = false
     @State private var showStats = false
     @State private var showHistory = false
+    @State private var selectedReportId: ReportNavItem? = nil
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: HomeViewModel(tokenManager: tokenManager))
@@ -42,6 +43,12 @@ struct HomeView: View {
             }
             .navigationDestination(isPresented: $showHistory) {
                 PurchaseHistoryView(tokenManager: tokenManager)
+            }
+            .navigationDestination(isPresented: $showShopping) {
+                ShoppingListView(tokenManager: tokenManager)
+            }
+            .navigationDestination(item: $selectedReportId) { item in
+                ReportDetailView(reportId: item.id, tokenManager: tokenManager)
             }
         }
     }
@@ -206,12 +213,35 @@ struct HomeView: View {
                     ) { showHistory = true }
                 }
 
+                // Recent reports
+                if !data.recentReports.isEmpty {
+                    recentReportsSection(data.recentReports)
+                }
+
                 Spacer(minLength: 16)
             }
             .padding(.horizontal, 18)
             .padding(.bottom, 16)
         }
         .refreshable { await vm.refresh() }
+    }
+
+    private func recentReportsSection(_ reports: [ReportResponse]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Signalements récents")
+                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                .foregroundColor(.darkText)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(reports) { report in
+                        ReportCardView(report: report)
+                            .onTapGesture { selectedReportId = ReportNavItem(id: report.id) }
+                    }
+                }
+                .padding(.trailing, 4)
+            }
+        }
     }
 
     private func spendingCard(_ data: HomeViewModel.HomeData) -> some View {
@@ -344,6 +374,81 @@ private struct QuickActionCard: View {
             .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
         }
         .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Report Card
+
+private struct ReportCardView: View {
+    let report: ReportResponse
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ZStack {
+                Rectangle().fill(Color.lightCardBg)
+                if let first = report.photoUrls?.first, let url = URL(string: first) {
+                    AsyncImage(url: url) { phase in
+                        if case .success(let img) = phase {
+                            img.resizable().scaledToFill()
+                        } else if case .failure = phase {
+                            placeholderContent
+                        } else {
+                            Color.lightCardBg
+                        }
+                    }
+                } else {
+                    placeholderContent
+                }
+            }
+            .frame(width: 200, height: 110)
+            .clipped()
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(report.title)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.darkText)
+                    .lineLimit(1)
+
+                HStack(spacing: 6) {
+                    RoommateAvatar(user: report.user, size: 18, cornerRadius: 6, fontSize: 8)
+                    Text(report.user.name)
+                        .font(.system(size: 11))
+                        .foregroundColor(.subtitleText)
+                        .lineLimit(1)
+                }
+
+                HStack {
+                    if let count = report.commentCount, count > 0 {
+                        Text("\(count) commentaire\(count > 1 ? "s" : "")")
+                            .font(.system(size: 10))
+                            .foregroundColor(.greenPrimary)
+                    } else {
+                        Text("Aucun commentaire")
+                            .font(.system(size: 10))
+                            .foregroundColor(.subtitleText)
+                    }
+                    Spacer()
+                    Text(formatTimeAgo(report.createdAt))
+                        .font(.system(size: 10))
+                        .foregroundColor(.lightText)
+                }
+            }
+            .padding(12)
+        }
+        .frame(width: 200)
+        .background(Color.white)
+        .cornerRadius(20)
+        .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
+    }
+
+    private var placeholderContent: some View {
+        VStack(spacing: 4) {
+            Text("📋").font(.system(size: 28))
+            Text("Pas de photo")
+                .font(.system(size: 11))
+                .foregroundColor(.subtitleText)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

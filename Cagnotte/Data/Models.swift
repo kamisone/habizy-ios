@@ -282,3 +282,70 @@ struct RotationEntryResponse: Decodable, Identifiable {
     let status: String?
     let isDisabled: Bool?
 }
+
+// MARK: - Report Models
+
+struct ReportResponse: Decodable, Identifiable {
+    let id: String
+    let title: String
+    let description: String?
+    let tags: [String]?
+    let photoUrls: [String]?
+    let user: UserResponse
+    let colocationId: String
+    let commentCount: Int?
+    let createdAt: String?
+    let updatedAt: String?
+}
+
+struct ReportCommentResponse: Decodable, Identifiable {
+    let id: String
+    let content: String
+    let user: UserResponse
+    let createdAt: String?
+}
+
+struct ReportDetailResponse: Decodable {
+    let id: String
+    let title: String
+    let description: String?
+    let tags: [String]?
+    let photoUrls: [String]?
+    let user: UserResponse
+    let colocationId: String
+    let comments: [ReportCommentResponse]
+    let createdAt: String?
+    let updatedAt: String?
+}
+
+struct CreateReportRequest: Encodable {
+    let colocationId: String
+    let title: String
+    let description: String?
+    let tags: [String]?
+    let photoUrls: [String]?
+}
+
+struct UpdateReportRequest: Encodable {
+    let title: String?
+    let description: String?
+    let tags: [String]?
+    let photoUrls: [String]?
+}
+
+struct CreateReportCommentRequest: Encodable {
+    let content: String
+}
+
+struct ReportTagResponse: Decodable, Identifiable {
+    let id: String
+    let title: String
+    let color: String
+    let colocationId: String
+}
+
+struct CreateTagRequest: Encodable {
+    let title: String
+    let color: String
+    let colocationId: String
+}

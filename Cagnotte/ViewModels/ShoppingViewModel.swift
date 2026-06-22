@@ -8,6 +8,7 @@ final class ShoppingViewModel: ObservableObject {
     @Published var successMessage: String?
     @Published var members: [UserResponse] = []
     @Published var catalogArticles: [CatalogArticle] = []
+    @Published var categories: [String] = []
     @Published var isAdmin = false
 
     private let repo: ShoppingRepository
@@ -51,6 +52,7 @@ final class ShoppingViewModel: ObservableObject {
             let detail = try? await detailTask
             members = detail?.members.map { $0.user } ?? []
             catalogArticles = (try? await catalogTask) ?? []
+            categories = (try? await catalogRepo.getCategories(colocationId: id)) ?? []
             isAdmin = (try? await meTask)?.isAdmin ?? false
         } catch {
             errorMessage = error.localizedDescription

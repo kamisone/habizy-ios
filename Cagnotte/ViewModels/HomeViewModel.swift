@@ -16,6 +16,7 @@ final class HomeViewModel: ObservableObject {
         var daysUntilTurn: String
         var isMyTurn: Bool
         var colocationId: String
+        var recentReports: [ReportResponse]
     }
 
     enum HomeState {
@@ -31,6 +32,7 @@ final class HomeViewModel: ObservableObject {
     private let shoppingRepo: ShoppingRepository
     private let rotationRepo: RotationRepository
     private let receiptRepo: ReceiptRepository
+    private let reportRepo: ReportRepository
     private let tokenManager: TokenManager
 
     init(tokenManager: TokenManager) {
@@ -40,6 +42,7 @@ final class HomeViewModel: ObservableObject {
         self.shoppingRepo = ShoppingRepository(api: api)
         self.rotationRepo = RotationRepository(api: api)
         self.receiptRepo = ReceiptRepository(api: api)
+        self.reportRepo = ReportRepository(api: api)
     }
 
     func load() {
@@ -59,10 +62,12 @@ final class HomeViewModel: ObservableObject {
             async let shoppingTask = shoppingRepo.getList(colocationId: colocationId)
             async let rotationTask = rotationRepo.getRotation(colocationId: colocationId)
             async let statsTask = receiptRepo.getStats(colocationId: colocationId)
+            async let reportsTask = reportRepo.getReports(colocationId: colocationId)
 
             let shopping = (try? await shoppingTask) ?? []
             let rotation = (try? await rotationTask) ?? []
             let stats = try? await statsTask
+            let reports = (try? await reportsTask) ?? []
 
             let me = try? await APIService.configure(tokenManager: tokenManager).getMe()
             let userName = me?.name ?? detail.members.first?.user.name ?? "Utilisateur"
@@ -88,7 +93,8 @@ final class HomeViewModel: ObservableObject {
                 shoppingPreview: Array(shopping.prefix(3)),
                 daysUntilTurn: daysUntilTurn,
                 isMyTurn: currentEntry?.user.id == userId,
-                colocationId: colocationId
+                colocationId: colocationId,
+                recentReports: Array(reports.prefix(5))
             )
             state = .loaded(data)
         } catch let error as APIError {
@@ -116,12 +122,13 @@ final class HomeViewModel: ObservableObject {
 
     private func computeDaysUntilTurn(rotation: [RotationEntryResponse], userId: String?) -> String {
         guard let userId else { return "---" }
-        let currentIndex = rotation.firstIndex { $0.status == "current" } ?? -1
-        let myIndex = rotation.firstIndex { $0.user.id == userId } ?? -1
+        let active = rotation.filter { $0.isDisabled != true }
+        let currentIndex = active.firstIndex { $0.status == "current" } ?? -1
+        let myIndex = active.firstIndex { $0.user.id == userId } ?? -1
         guard currentIndex >= 0, myIndex >= 0 else { return "---" }
         let diff = myIndex >= currentIndex
             ? myIndex - currentIndex
-            : rotation.count - currentIndex + myIndex
+            : active.count - currentIndex + myIndex
         switch diff {
         case 0: return "c'est ton tour"
         case 1: return "tu es le prochain"

@@ -98,3 +98,30 @@ extension Double {
         return "\(formatted) €"
     }
 }
+
+// MARK: - Time Ago Formatter
+func formatTimeAgo(_ isoDate: String?) -> String {
+    guard let isoDate, !isoDate.isEmpty else { return "" }
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    var date = formatter.date(from: isoDate)
+    if date == nil {
+        formatter.formatOptions = [.withInternetDateTime]
+        date = formatter.date(from: isoDate)
+    }
+    guard let parsed = date else { return isoDate }
+    let diff = Date().timeIntervalSince(parsed)
+    let minutes = Int(diff / 60)
+    let hours = minutes / 60
+    let days = hours / 24
+    switch minutes {
+    case ..<1: return "a l'instant"
+    case ..<60: return "il y a \(minutes)min"
+    case ..<1440: return "il y a \(hours)h"
+    case ..<10080: return "il y a \(days)j"
+    default:
+        let fmt = DateFormatter()
+        fmt.dateFormat = "dd/MM/yyyy"
+        return fmt.string(from: parsed)
+    }
+}

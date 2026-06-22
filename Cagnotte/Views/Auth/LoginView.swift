@@ -19,19 +19,19 @@ struct LoginView: View {
                         .ignoresSafeArea(edges: .top)
                     VStack(spacing: 4) {
                         Text("Cagnotte")
-                            .font(.system(size: 36, weight: .bold, design: .rounded))
+                            .font(.system(size: 30, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
                         Text("Coloc")
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
+                            .font(.system(size: 17, weight: .semibold, design: .rounded))
                             .foregroundColor(.white.opacity(0.85))
                     }
-                    .padding(.vertical, 48)
+                    .padding(.vertical, 28)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 0))
                 .overlay(
                     RoundedRectangle(cornerRadius: 36)
                         .fill(Color.screenBackground)
-                        .offset(y: 200)
+                        .offset(y: 130)
                 )
 
                 VStack(spacing: 16) {

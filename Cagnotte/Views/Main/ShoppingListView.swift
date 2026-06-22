@@ -180,7 +180,7 @@ struct ShoppingListView: View {
                 set: { vm.successMessage = $0 }
             ), type: .success)
             .sheet(isPresented: $showAddCatalogDialog) {
-                AddCatalogArticleSheet { name, category in
+                AddCatalogArticleSheet(existingCategories: vm.categories) { name, category in
                     vm.addCatalogArticle(name: name, category: category)
                 }
             }
@@ -339,21 +339,38 @@ struct QuantityPickerSheet: View {
 // MARK: - Add Catalog Article Sheet
 struct AddCatalogArticleSheet: View {
     @Environment(\.dismiss) private var dismiss
+    let existingCategories: [String]
     let onDone: (String, String) -> Void
 
-    let categories = ["Alimentation", "Hygiène", "Ménage", "Boissons", "Autre"]
     @State private var name = ""
-    @State private var selectedCategory = "Alimentation"
+    @State private var categoryInput = ""
+
+    private var filteredCategories: [String] {
+        guard !categoryInput.isEmpty else { return existingCategories }
+        return existingCategories.filter { $0.localizedCaseInsensitiveContains(categoryInput) }
+    }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Nom") { TextField("Ex: Lait", text: $name) }
                 Section("Categorie") {
-                    Picker("Categorie", selection: $selectedCategory) {
-                        ForEach(categories, id: \.self) { Text($0) }
+                    TextField("Ex: Alimentation", text: $categoryInput)
+                    if !filteredCategories.isEmpty {
+                        ForEach(filteredCategories, id: \.self) { cat in
+                            Button {
+                                categoryInput = cat
+                            } label: {
+                                HStack {
+                                    Text(cat).foregroundColor(.darkText)
+                                    Spacer()
+                                    if categoryInput == cat {
+                                        Image(systemName: "checkmark").foregroundColor(.greenPrimary)
+                                    }
+                                }
+                            }
+                        }
                     }
-                    .pickerStyle(.menu)
                 }
             }
             .navigationTitle("Nouvel article")
@@ -362,10 +379,10 @@ struct AddCatalogArticleSheet: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Annuler") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Ajouter") {
-                        onDone(name.trimmingCharacters(in: .whitespaces), selectedCategory)
+                        onDone(name.trimmingCharacters(in: .whitespaces), categoryInput.trimmingCharacters(in: .whitespaces))
                         dismiss()
                     }
-                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || categoryInput.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
         }

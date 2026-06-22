@@ -13,7 +13,7 @@ struct MainTabView: View {
                 HomeView(tokenManager: tokenManager)
                     .tag(0)
 
-                ShoppingListView(tokenManager: tokenManager)
+                ReportsView(tokenManager: tokenManager)
                     .tag(1)
 
                 ExpensesView(tokenManager: tokenManager)
@@ -48,7 +48,7 @@ struct CustomTabBar: View {
             TabBarItem(icon: "house", label: "Accueil", isSelected: selectedTab == 0) {
                 selectedTab = 0
             }
-            TabBarItem(icon: "cart", label: "Courses", isSelected: selectedTab == 1) {
+            TabBarItem(icon: "flag", label: "Signalements", isSelected: selectedTab == 1) {
                 selectedTab = 1
             }
 
