@@ -9,7 +9,9 @@
 /* Begin PBXBuildFile section */
 		0076FDED547833CE2D5C64BF /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823C88C32BB0A849DF6BBE15 /* AuthViewModel.swift */; };
 		00771F26F36E2A96CD49C306 /* PurchaseHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B245F2BD2AE85C0D7C0695F /* PurchaseHistoryView.swift */; };
+		AA11223344556677889900AB /* ArticleStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB11223344556677889900CD /* ArticleStatsView.swift */; };
 		04D5B009728D17053786B4AD /* ShoppingRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5768F0CE789DE45A156767 /* ShoppingRepository.swift */; };
+		CC112233445566778899AABB /* CatalogRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD112233445566778899AABB /* CatalogRepository.swift */; };
 		05582C10ADBA38742DE54E00 /* ExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6667E42BBE9A1B07D402991 /* ExpensesView.swift */; };
 		09772AEE4403283C6B774573 /* RotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484F33A2D064F2A4790D11C9 /* RotationView.swift */; };
 		0C3AF7F354C96F6E7FD9B09D /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28424EB6B52634CBE25A1B06 /* RootView.swift */; };
@@ -27,6 +29,7 @@
 		5686447B5DB4D0E3BB56B175 /* RotationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C535405C5842A3392CFBE3E /* RotationRepository.swift */; };
 		625285D5279DA33D7C655EFD /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1B944B4598C1AB75376381 /* APIService.swift */; };
 		66BE23A359053A098AD8367F /* CreateUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94100E8F92BB5926EB7366EE /* CreateUserView.swift */; };
+		67448C7A7D9B80392C19E970 /* StorageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BB9C8A1533BB4BCC56D7D8 /* StorageRepository.swift */; };
 		6BA4B9B5E486F7E6F2414E33 /* CompleteProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86723107E97A714A49FAF7DF /* CompleteProfileView.swift */; };
 		7A53DD0450823A461494C471 /* ShoppingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857FF2E489467F7DC41DEC89 /* ShoppingListView.swift */; };
 		7FBC6161E381CFD2223D30B6 /* AdminSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708DF1961DB91B87D53220CA /* AdminSettingsViewModel.swift */; };
@@ -59,11 +62,13 @@
 		29EB7704EAE07FD437BFB795 /* ContributionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContributionRepository.swift; sourceTree = "<group>"; };
 		2BA7570135BE824C09936057 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		31CE0211D7E82F4FCC9100FF /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		36BB9C8A1533BB4BCC56D7D8 /* StorageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageRepository.swift; sourceTree = "<group>"; };
 		381E2582ED22D33BB031DD4C /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		39170A974D5A80CCB28E6202 /* ColocationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColocationRepository.swift; sourceTree = "<group>"; };
 		3BBA7A60FC72F0611C762F4B /* MembersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersViewModel.swift; sourceTree = "<group>"; };
 		484F33A2D064F2A4790D11C9 /* RotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationView.swift; sourceTree = "<group>"; };
 		4B245F2BD2AE85C0D7C0695F /* PurchaseHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseHistoryView.swift; sourceTree = "<group>"; };
+		BB11223344556677889900CD /* ArticleStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleStatsView.swift; sourceTree = "<group>"; };
 		515633E517E85E5902A89B23 /* NotificationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRepository.swift; sourceTree = "<group>"; };
 		5244AE774D63EDD819729D2D /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		6594F56BBF01C36F8770E36E /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -80,6 +85,7 @@
 		94100E8F92BB5926EB7366EE /* CreateUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserView.swift; sourceTree = "<group>"; };
 		9C01F799BA6CA475E6FE13DC /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		AF5768F0CE789DE45A156767 /* ShoppingRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingRepository.swift; sourceTree = "<group>"; };
+		DD112233445566778899AABB /* CatalogRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogRepository.swift; sourceTree = "<group>"; };
 		AF7E81887E39B71F777096A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BB5FBBD447C9FAFE8A94ED8F /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		BC1B944B4598C1AB75376381 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
@@ -135,9 +141,11 @@
 				39170A974D5A80CCB28E6202 /* ColocationRepository.swift */,
 				29EB7704EAE07FD437BFB795 /* ContributionRepository.swift */,
 				515633E517E85E5902A89B23 /* NotificationRepository.swift */,
+				DD112233445566778899AABB /* CatalogRepository.swift */,
 				928754309C6FA0078542B7BE /* ReceiptRepository.swift */,
 				6C535405C5842A3392CFBE3E /* RotationRepository.swift */,
 				AF5768F0CE789DE45A156767 /* ShoppingRepository.swift */,
+				36BB9C8A1533BB4BCC56D7D8 /* StorageRepository.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -171,6 +179,7 @@
 			isa = PBXGroup;
 			children = (
 				D942702BF00137D222836BFE /* AddReceiptView.swift */,
+				BB11223344556677889900CD /* ArticleStatsView.swift */,
 				EEEA04FAE975C72138328B3B /* AdminSettingsView.swift */,
 				C72C800DB40BDCE9183D8218 /* ContributeView.swift */,
 				94100E8F92BB5926EB7366EE /* CreateUserView.swift */,
@@ -300,6 +309,7 @@
 			files = (
 				625285D5279DA33D7C655EFD /* APIService.swift in Sources */,
 				8CCC94F5D438D378AF48B711 /* AddReceiptView.swift in Sources */,
+				AA11223344556677889900AB /* ArticleStatsView.swift in Sources */,
 				9198C53FEA7417CE71BB0CB9 /* AdminSettingsView.swift in Sources */,
 				7FBC6161E381CFD2223D30B6 /* AdminSettingsViewModel.swift in Sources */,
 				27E809BEE12390EACAB9652A /* AppTheme.swift in Sources */,
@@ -329,6 +339,7 @@
 				E1017C5BFC0AACE0810E028B /* ProfileView.swift in Sources */,
 				1B349905C0392ED607D77C15 /* ProfileViewModel.swift in Sources */,
 				00771F26F36E2A96CD49C306 /* PurchaseHistoryView.swift in Sources */,
+				CC112233445566778899AABB /* CatalogRepository.swift in Sources */,
 				D55151C673AB56CDC04AA104 /* ReceiptRepository.swift in Sources */,
 				9F4644D4D6E84C5289151F88 /* ReceiptViewModel.swift in Sources */,
 				39638C85959A2C37949E529A /* RoommateAvatar.swift in Sources */,
@@ -339,6 +350,7 @@
 				7A53DD0450823A461494C471 /* ShoppingListView.swift in Sources */,
 				04D5B009728D17053786B4AD /* ShoppingRepository.swift in Sources */,
 				1250D4F5EE735C229F016852 /* ShoppingViewModel.swift in Sources */,
+				67448C7A7D9B80392C19E970 /* StorageRepository.swift in Sources */,
 				5652C2C7C787EB4F56E4676B /* ToastView.swift in Sources */,
 				820455CC40CD24D32E141AAF /* TokenManager.swift in Sources */,
 			);

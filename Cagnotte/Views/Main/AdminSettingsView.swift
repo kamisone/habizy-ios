@@ -92,18 +92,10 @@ struct AdminSettingsView: View {
             }
 
             VStack(alignment: .leading, spacing: 6) {
-                Text("Montant de cotisation (€)")
+                Text("Seuil d'alerte écart de dépenses (€)")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(.subtitleText)
-                AppTextField(placeholder: "Ex: 50.00", text: $vm.contributionAmount)
-                    .keyboardType(.decimalPad)
-            }
-
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Alerte solde bas (€)")
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.subtitleText)
-                AppTextField(placeholder: "Ex: 20.00", text: $vm.lowBalanceThreshold)
+                AppTextField(placeholder: "Ex: 50", text: $vm.spendingGapThreshold)
                     .keyboardType(.decimalPad)
             }
 

@@ -43,6 +43,10 @@ final class AuthRepository {
         try await api.changePassword(body: ChangePasswordRequest(currentPassword: current, newPassword: new))
     }
 
+    func updateName(_ name: String) async throws -> UserResponse {
+        try await api.updateName(name: name)
+    }
+
     func deleteMe() async throws {
         try await api.deleteMe()
         tokenManager.clear()

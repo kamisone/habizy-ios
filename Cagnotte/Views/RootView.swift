@@ -5,7 +5,9 @@ struct RootView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
 
     var body: some View {
-        Group {
+        ZStack {
+            Color.screenBackground.ignoresSafeArea()
+
             if !tokenManager.isLoggedIn {
                 LoginView()
             } else if tokenManager.profileCompleted == false {

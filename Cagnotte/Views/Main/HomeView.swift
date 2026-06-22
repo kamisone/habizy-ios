@@ -6,9 +6,8 @@ struct HomeView: View {
     @State private var showNotifications = false
     @State private var showRotation = false
     @State private var showShopping = false
-    @State private var showDecideForMe = false
+    @State private var showStats = false
     @State private var showHistory = false
-    @State private var showContribute = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: HomeViewModel(tokenManager: tokenManager))
@@ -29,6 +28,8 @@ struct HomeView: View {
                 }
             }
             .background(Color.screenBackground.ignoresSafeArea())
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbar(.hidden, for: .navigationBar)
             .onAppear { vm.load() }
             .navigationDestination(isPresented: $showNotifications) {
                 NotificationsView(tokenManager: tokenManager)
@@ -36,14 +37,11 @@ struct HomeView: View {
             .navigationDestination(isPresented: $showRotation) {
                 RotationView(tokenManager: tokenManager)
             }
-            .navigationDestination(isPresented: $showDecideForMe) {
-                DecideForMeView(tokenManager: tokenManager)
+            .navigationDestination(isPresented: $showStats) {
+                StatsView(tokenManager: tokenManager)
             }
             .navigationDestination(isPresented: $showHistory) {
                 PurchaseHistoryView(tokenManager: tokenManager)
-            }
-            .navigationDestination(isPresented: $showContribute) {
-                ContributeView(tokenManager: tokenManager)
             }
         }
     }
@@ -105,46 +103,89 @@ struct HomeView: View {
                 }
                 .padding(.top, 8)
 
-                // Balance card
-                balanceCard(data)
+                // Spending summary card
+                spendingCard(data)
 
                 // Stat row
                 HStack(spacing: 12) {
                     StatCard(label: "Mon tour", value: data.daysUntilTurn, valueColor: .darkText)
-                    StatCard(label: "Dépensé ce mois", value: "-\(data.totalSpent.euroFormatted)", valueColor: .coralRed)
+                    StatCard(label: "Mes depenses", value: "-\(data.mySpent.euroFormatted)", valueColor: .coralRed)
                 }
 
                 // Current shopper card
-                Button { showRotation = true } label: {
-                    HStack(spacing: 13) {
-                        RoommateAvatar(
-                            colorHex: data.currentShopperColor,
-                            initial: data.currentShopperInitial,
-                            size: 44,
-                            cornerRadius: 15
-                        )
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Aux courses cette semaine")
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(.subtitleText)
-                            Text("C'est au tour de \(data.currentShopperName)")
-                                .font(.system(size: 16, weight: .semibold, design: .rounded))
-                                .foregroundColor(.darkText)
+                if data.isMyTurn {
+                    Button { showRotation = true } label: {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 17)
+                                    .fill(Color.white.opacity(0.25))
+                                    .frame(width: 52, height: 52)
+                                Image(systemName: "cart")
+                                    .font(.system(size: 22, weight: .semibold))
+                                    .foregroundColor(.white)
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("C'est ton tour !")
+                                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                                    .foregroundColor(.white)
+                                Text("Tu es le prochain a faire les courses")
+                                    .font(.system(size: 13, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.9))
+                            }
+                            Spacer()
                         }
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(.subtitleText)
-                            .padding(8)
-                            .background(Color.lightCardBg)
-                            .cornerRadius(10)
+                        .padding(20)
+                        .background(
+                            LinearGradient(
+                                colors: [Color(hex: "#FFB020"), Color(hex: "#FF8C00")],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .cornerRadius(26)
+                        .shadow(color: Color(hex: "#FF8C00").opacity(0.4), radius: 16, x: 0, y: 6)
                     }
-                    .padding(14)
-                    .background(Color.white)
-                    .cornerRadius(22)
-                    .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
+                    .buttonStyle(.plain)
+                } else {
+                    Button { showRotation = true } label: {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 17)
+                                    .fill(Color.white.opacity(0.2))
+                                    .frame(width: 52, height: 52)
+                                Text(data.currentShopperInitial)
+                                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                                    .foregroundColor(.white)
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Aux courses")
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.8))
+                                Text(data.currentShopperName)
+                                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                                    .foregroundColor(.white)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundColor(.white)
+                                .padding(8)
+                                .background(Color.white.opacity(0.2))
+                                .cornerRadius(10)
+                        }
+                        .padding(20)
+                        .background(
+                            LinearGradient(
+                                colors: [Color(hex: "#3B82F6"), Color(hex: "#1E40AF")],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .cornerRadius(26)
+                        .shadow(color: Color(hex: "#1E40AF").opacity(0.3), radius: 12, x: 0, y: 4)
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
 
                 // Shopping preview
                 shoppingPreviewCard(data)
@@ -152,11 +193,11 @@ struct HomeView: View {
                 // Quick actions
                 HStack(spacing: 12) {
                     QuickActionCard(
-                        icon: "dice",
-                        label: "Décide pour moi",
+                        icon: "chart.bar",
+                        label: "Statistiques",
                         bgColor: Color.purple.opacity(0.12),
                         iconColor: .purple
-                    ) { showDecideForMe = true }
+                    ) { showStats = true }
                     QuickActionCard(
                         icon: "clock.arrow.circlepath",
                         label: "Historique",
@@ -170,21 +211,18 @@ struct HomeView: View {
             .padding(.horizontal, 18)
             .padding(.bottom, 16)
         }
+        .refreshable { await vm.refresh() }
     }
 
-    private func balanceCard(_ data: HomeViewModel.HomeData) -> some View {
-        let progressFraction = data.totalContributed > 0
-            ? min(1, max(0, Float(data.balance / data.totalContributed)))
-            : 0
-
-        return ZStack(alignment: .bottomLeading) {
+    private func spendingCard(_ data: HomeViewModel.HomeData) -> some View {
+        ZStack(alignment: .bottomLeading) {
             LinearGradient.greenGradient
             VStack(alignment: .leading, spacing: 0) {
-                Text("Cagnotte commune")
+                Text("Dépenses de la coloc")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(.white.opacity(0.9))
                 HStack(alignment: .bottom, spacing: 6) {
-                    Text(String(format: "%.2f", data.balance).replacingOccurrences(of: ".", with: ","))
+                    Text(String(format: "%.2f", data.totalSpent).replacingOccurrences(of: ".", with: ","))
                         .font(.system(size: 48, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                     Text("€")
@@ -193,27 +231,10 @@ struct HomeView: View {
                         .padding(.bottom, 6)
                 }
                 .padding(.top, 6)
-                Text("sur \(data.totalContributed.euroFormatted) · \(data.memberCount) colocataires")
+                Text("\(data.memberCount) colocataires · total cumulé")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(.white.opacity(0.85))
                     .padding(.top, 4)
-
-                // Progress bar
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        Capsule().fill(Color.white.opacity(0.22))
-                            .frame(height: 10)
-                        Capsule().fill(Color.orange)
-                            .frame(width: geo.size.width * CGFloat(progressFraction), height: 10)
-                    }
-                }
-                .frame(height: 10)
-                .padding(.top, 18)
-
-                Text("De quoi tenir encore environ 1 semaine")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.white.opacity(0.88))
-                    .padding(.top, 9)
             }
             .padding(22)
         }
@@ -224,11 +245,11 @@ struct HomeView: View {
     private func shoppingPreviewCard(_ data: HomeViewModel.HomeData) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text("Liste de courses")
+                Text("Articles manquants")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(.darkText)
                 Spacer()
-                Text("\(data.shoppingItemCount) articles")
+                Text("\(data.shoppingItemCount) a acheter")
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(.greenPrimary)
             }
@@ -236,18 +257,18 @@ struct HomeView: View {
 
             ForEach(data.shoppingPreview) { item in
                 HStack(spacing: 11) {
-                    RoundedRectangle(cornerRadius: 7)
-                        .stroke(Color.borderColor, lineWidth: 1.5)
-                        .frame(width: 21, height: 21)
+                    Circle()
+                        .fill(Color.greenPrimary)
+                        .frame(width: 8, height: 8)
                     Text(item.name)
                         .font(.system(size: 14, weight: .medium))
                         .foregroundColor(.bodyText)
                     Spacer()
-                    Text("×\(item.quantity)")
+                    Text("x\(item.quantity)")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundColor(.subtitleText)
                 }
-                .padding(.vertical, 5)
+                .padding(.vertical, 6)
             }
 
             let remaining = data.shoppingItemCount - data.shoppingPreview.count

@@ -7,9 +7,9 @@ final class AdminSettingsViewModel: ObservableObject {
     @Published var isSaving = false
     @Published var errorMessage: String?
     @Published var successMessage: String?
-    @Published var contributionAmount: String = ""
-    @Published var lowBalanceThreshold: String = ""
+    @Published var spendingGapThreshold: String = ""
     @Published var colocationName: String = ""
+    @Published var notificationsEnabled: Bool = true
 
     private let colocationRepo: ColocationRepository
     private let rotationRepo: RotationRepository
@@ -32,12 +32,10 @@ final class AdminSettingsViewModel: ObservableObject {
                 let detail = try await colocationRepo.getMyColocation()
                 colocation = detail.colocation
                 colocationName = detail.colocation.name
-                if let amt = detail.colocation.contributionAmount {
-                    contributionAmount = String(format: "%.2f", amt)
+                if let threshold = detail.colocation.spendingGapThreshold {
+                    spendingGapThreshold = String(format: "%.0f", threshold)
                 }
-                if let threshold = detail.colocation.lowBalanceThreshold {
-                    lowBalanceThreshold = String(format: "%.2f", threshold)
-                }
+                notificationsEnabled = detail.colocation.notificationsEnabled ?? true
             } catch {
                 errorMessage = error.localizedDescription
             }
@@ -46,8 +44,7 @@ final class AdminSettingsViewModel: ObservableObject {
 
     func saveSettings() {
         guard let id = colocationId else { return }
-        let amount = Double(contributionAmount.replacingOccurrences(of: ",", with: "."))
-        let threshold = Double(lowBalanceThreshold.replacingOccurrences(of: ",", with: "."))
+        let threshold = Double(spendingGapThreshold.replacingOccurrences(of: ",", with: "."))
         Task {
             isSaving = true
             defer { isSaving = false }
@@ -55,8 +52,8 @@ final class AdminSettingsViewModel: ObservableObject {
                 colocation = try await colocationRepo.updateColocation(
                     id: id,
                     name: colocationName.isEmpty ? nil : colocationName,
-                    contributionAmount: amount,
-                    lowBalanceThreshold: threshold
+                    spendingGapThreshold: threshold,
+                    notificationsEnabled: notificationsEnabled
                 )
                 successMessage = "Paramètres sauvegardés"
             } catch {

@@ -8,7 +8,7 @@ struct ProfileView: View {
     @State private var showMembers = false
     @State private var showCreateUser = false
     @State private var showAdmin = false
-    @State private var showContribute = false
+    @State private var showChangeName = false
     @State private var currentPassword = ""
     @State private var newPassword = ""
 
@@ -56,7 +56,10 @@ struct ProfileView: View {
                 }
                 .padding(.top, 16)
             }
+            .refreshable { await vm.refresh() }
             .background(Color.screenBackground.ignoresSafeArea())
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbar(.hidden, for: .navigationBar)
             .onAppear { vm.load() }
             .navigationDestination(isPresented: $showMembers) {
                 MembersView(tokenManager: tokenManager)
@@ -67,11 +70,11 @@ struct ProfileView: View {
             .navigationDestination(isPresented: $showAdmin) {
                 AdminSettingsView(tokenManager: tokenManager)
             }
-            .navigationDestination(isPresented: $showContribute) {
-                ContributeView(tokenManager: tokenManager)
-            }
             .sheet(isPresented: $showChangePassword) {
                 changePasswordSheet
+            }
+            .sheet(isPresented: $showChangeName) {
+                changeNameSheet
             }
             .toast(message: Binding(
                 get: { vm.errorMessage },
@@ -87,9 +90,36 @@ struct ProfileView: View {
     private func avatarSection(_ user: UserResponse) -> some View {
         VStack(spacing: 10) {
             RoommateAvatar(user: user, size: 80, cornerRadius: 28, fontSize: 32)
-            Text(user.name)
-                .font(.system(size: 22, weight: .bold, design: .rounded))
-                .foregroundColor(.darkText)
+            // Editable name
+            HStack(spacing: 6) {
+                Text(user.name)
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .foregroundColor(.darkText)
+                Button { showChangeName = true } label: {
+                    Image(systemName: "pencil")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.subtitleText)
+                        .padding(5)
+                        .background(Color.lightCardBg)
+                        .cornerRadius(8)
+                }
+                .buttonStyle(.plain)
+            }
+            // Admin badge
+            if vm.isAdmin {
+                HStack(spacing: 4) {
+                    Image(systemName: "shield.fill")
+                        .font(.system(size: 10))
+                        .foregroundColor(.greenPrimary)
+                    Text("Admin")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(.greenPrimary)
+                }
+                .padding(.horizontal, 9)
+                .padding(.vertical, 3)
+                .background(Color.greenPrimary.opacity(0.12))
+                .cornerRadius(8)
+            }
             Text(user.email)
                 .font(.system(size: 14))
                 .foregroundColor(.subtitleText)
@@ -99,7 +129,7 @@ struct ProfileView: View {
 
     private var statsRow: some View {
         HStack(spacing: 12) {
-            ProfileStat(label: "Cotisations", value: vm.totalContributed.euroFormatted)
+            ProfileStat(label: "Total dépensé", value: vm.myTotalSpent.euroFormatted)
             ProfileStat(label: "Tickets", value: "\(vm.ticketCount)")
         }
         .padding(.horizontal, 18)
@@ -145,10 +175,6 @@ struct ProfileView: View {
 
     private var settingsSection: some View {
         VStack(spacing: 0) {
-            SettingsRow(icon: "eurosign.circle", label: "Cotiser") {
-                showContribute = true
-            }
-            Divider().padding(.leading, 56)
             SettingsRow(icon: "key", label: "Changer le mot de passe") {
                 showChangePassword = true
             }
@@ -183,6 +209,12 @@ struct ProfileView: View {
         }
     }
 
+    private var changeNameSheet: some View {
+        ChangeNameSheet(currentName: vm.user?.name ?? "") { newName in
+            vm.updateName(newName)
+        }
+    }
+
     private var changePasswordSheet: some View {
         NavigationStack {
             VStack(spacing: 16) {
@@ -208,6 +240,47 @@ struct ProfileView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Annuler") { showChangePassword = false }
+                }
+            }
+        }
+    }
+}
+
+private struct ChangeNameSheet: View {
+    let currentName: String
+    let onSave: (String) -> Void
+    @Environment(\.dismiss) private var dismiss
+    @State private var name: String
+
+    init(currentName: String, onSave: @escaping (String) -> Void) {
+        self.currentName = currentName
+        self.onSave = onSave
+        _name = State(initialValue: currentName)
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 16) {
+                Text("Modifier le nom affiché")
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundColor(.darkText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                AppTextField(placeholder: "Nom affiché", text: $name)
+                PrimaryButton(
+                    title: "Enregistrer",
+                    disabled: name.trimmingCharacters(in: .whitespaces).isEmpty ||
+                              name.trimmingCharacters(in: .whitespaces) == currentName
+                ) {
+                    onSave(name.trimmingCharacters(in: .whitespaces))
+                    dismiss()
+                }
+                Spacer()
+            }
+            .padding(24)
+            .background(Color.screenBackground.ignoresSafeArea())
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Annuler") { dismiss() }
                 }
             }
         }

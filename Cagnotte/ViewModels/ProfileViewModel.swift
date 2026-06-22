@@ -5,8 +5,6 @@ final class ProfileViewModel: ObservableObject {
     @Published var user: UserResponse?
     @Published var colocation: ColocationResponse?
     @Published var members: [ColocationMemberResponse] = []
-    @Published var balance: BalanceResponse?
-    @Published var cycleStatus: CycleStatusResponse?
     @Published var receipts: [ReceiptResponse] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -14,7 +12,6 @@ final class ProfileViewModel: ObservableObject {
 
     private let authRepo: AuthRepository
     private let colocationRepo: ColocationRepository
-    private let contributionRepo: ContributionRepository
     private let receiptRepo: ReceiptRepository
     private let tokenManager: TokenManager
 
@@ -23,31 +20,34 @@ final class ProfileViewModel: ObservableObject {
         let api = APIService.configure(tokenManager: tokenManager)
         self.authRepo = AuthRepository(api: api, tokenManager: tokenManager)
         self.colocationRepo = ColocationRepository(api: api, tokenManager: tokenManager)
-        self.contributionRepo = ContributionRepository(api: api)
         self.receiptRepo = ReceiptRepository(api: api)
     }
 
     var colocationId: String? { tokenManager.colocationId }
 
     func load() {
-        Task {
-            isLoading = true
-            defer { isLoading = false }
-            do {
-                async let meTask = authRepo.getMe()
-                async let detailTask = colocationRepo.getMyColocation()
-                user = try await meTask
-                let detail = try await detailTask
-                colocation = detail.colocation
-                members = detail.members
-                balance = detail.balance
-                if let cid = colocationId {
-                    receipts = (try? await receiptRepo.getReceipts(colocationId: cid)) ?? []
-                    cycleStatus = try? await contributionRepo.getCycleStatus(colocationId: cid)
-                }
-            } catch {
-                errorMessage = error.localizedDescription
+        Task { await fetchData(showLoading: true) }
+    }
+
+    func refresh() async {
+        await fetchData(showLoading: false)
+    }
+
+    private func fetchData(showLoading: Bool) async {
+        if showLoading { isLoading = true }
+        defer { isLoading = false }
+        do {
+            async let meTask = authRepo.getMe()
+            async let detailTask = colocationRepo.getMyColocation()
+            user = try await meTask
+            let detail = try await detailTask
+            colocation = detail.colocation
+            members = detail.members
+            if let cid = colocationId {
+                receipts = (try? await receiptRepo.getReceipts(colocationId: cid)) ?? []
             }
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 
@@ -64,7 +64,21 @@ final class ProfileViewModel: ObservableObject {
         }
     }
 
-    var totalContributed: Double { balance?.totalContributed ?? 0 }
-    var ticketCount: Int { receipts.count }
+    func updateName(_ name: String) {
+        Task {
+            isLoading = true
+            defer { isLoading = false }
+            do {
+                user = try await authRepo.updateName(name)
+                successMessage = "Nom mis à jour"
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+
+    var myTotalSpent: Double { receipts.filter { $0.user.id == user?.id }.reduce(0) { $0 + $1.totalAmount } }
+    var ticketCount: Int { receipts.filter { $0.user.id == user?.id }.count }
     var isAdmin: Bool { members.first(where: { $0.user.id == user?.id })?.role == "admin" || user?.isAdmin == true }
+    var spendingGapThreshold: Double { colocation?.spendingGapThreshold ?? 50 }
 }

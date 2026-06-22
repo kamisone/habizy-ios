@@ -25,5 +25,11 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Photographier vos tickets de caisse pour les ajouter facilement.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Sélectionner une photo de ticket depuis votre galerie.</string>
+	<key>UILaunchScreen</key>
+	<dict/>
 </dict>
 </plist>

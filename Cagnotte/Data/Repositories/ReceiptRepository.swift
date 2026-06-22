@@ -12,12 +12,24 @@ final class ReceiptRepository {
         try await api.getReceipts(colocationId: colocationId)
     }
 
-    func createReceipt(colocationId: String, store: String, date: String, totalAmount: Double, items: [CreateReceiptItemRequest]) async throws -> ReceiptResponse {
-        let body = CreateReceiptRequest(colocationId: colocationId, store: store, date: date, totalAmount: totalAmount, items: items)
+    func createReceipt(colocationId: String, store: String, date: String, time: String? = nil, totalAmount: Double, photoUrl: String? = nil, items: [CreateReceiptItemRequest]) async throws -> ReceiptResponse {
+        let body = CreateReceiptRequest(colocationId: colocationId, store: store, date: date, time: time, totalAmount: totalAmount, photoUrl: photoUrl, items: items)
         return try await api.createReceipt(body: body)
     }
 
     func getStats(colocationId: String) async throws -> ExpenseStatsResponse {
         try await api.getExpenseStats(colocationId: colocationId)
+    }
+
+    func deleteReceipt(id: String) async throws {
+        try await api.deleteReceipt(id: id)
+    }
+
+    func getArticleCatalog(colocationId: String) async throws -> [ArticleSuggestion] {
+        try await api.getArticleCatalog(colocationId: colocationId)
+    }
+
+    func getArticleStats(colocationId: String) async throws -> [ArticleStat] {
+        try await api.getArticleStats(colocationId: colocationId)
     }
 }

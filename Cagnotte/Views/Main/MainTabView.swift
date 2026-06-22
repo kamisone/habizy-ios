@@ -7,6 +7,8 @@ struct MainTabView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
+            Color.screenBackground.ignoresSafeArea()
+
             TabView(selection: $selectedTab) {
                 HomeView(tokenManager: tokenManager)
                     .tag(0)
@@ -21,6 +23,7 @@ struct MainTabView: View {
                     .tag(3)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .background(Color.screenBackground)
 
             // Custom bottom bar
             CustomTabBar(selectedTab: $selectedTab, onAddTapped: {
@@ -74,10 +77,8 @@ struct CustomTabBar: View {
         .padding(.horizontal, 8)
         .padding(.top, 12)
         .padding(.bottom, 8)
-        .background(
-            Color.white
-                .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: -4)
-        )
+        .background(Color.white.ignoresSafeArea(edges: .bottom))
+        .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: -4)
     }
 }
 

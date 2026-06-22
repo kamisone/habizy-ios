@@ -3,10 +3,10 @@ import SwiftUI
 struct ShoppingListView: View {
     @EnvironmentObject var tokenManager: TokenManager
     @StateObject private var vm: ShoppingViewModel
-    @State private var showAddItem = false
-    @State private var newItemName = ""
-    @State private var newItemQty = 1
-    @State private var selectedAssigneeId: String?
+    @State private var showAddCatalogDialog = false
+    @State private var showCatalogPicker = false
+    @State private var selectedArticle: CatalogArticle?
+    @State private var quantityInput = 1
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: ShoppingViewModel(tokenManager: tokenManager))
@@ -14,209 +14,361 @@ struct ShoppingListView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .bottom) {
-                ScrollView {
-                    VStack(spacing: 0) {
-                        // Header
-                        HStack {
-                            Text("Liste de courses")
-                                .font(.system(size: 24, weight: .bold, design: .rounded))
-                                .foregroundColor(.darkText)
-                            Spacer()
-                            Button { showAddItem = true } label: {
-                                Image(systemName: "plus")
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .padding(10)
-                                    .background(Color.greenPrimary)
-                                    .cornerRadius(12)
-                            }
-                        }
-                        .padding(.horizontal, 18)
-                        .padding(.top, 16)
-                        .padding(.bottom, 12)
+            ScrollView {
+                VStack(spacing: 14) {
+                    // Header
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Articles manquants")
+                            .font(.system(size: 22, weight: .bold, design: .rounded))
+                            .foregroundColor(.darkText)
+                        Text("\(vm.items.count) article\(vm.items.count != 1 ? "s" : "") a acheter")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundColor(.subtitleText)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 18)
+                    .padding(.top, 16)
 
-                        if vm.isLoading {
-                            ProgressView().tint(.greenPrimary).padding(40)
-                        } else if vm.items.isEmpty {
-                            emptyState
+                    if vm.isLoading {
+                        ProgressView().tint(.greenPrimary).padding(40)
+                    } else {
+                        // Add button
+                        Button { showCatalogPicker = true } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 14, weight: .bold))
+                                Text("Ajouter un article")
+                                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                            }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(Color.greenPrimary)
+                            .cornerRadius(16)
+                            .shadow(color: Color.greenDark.opacity(0.3), radius: 8, x: 0, y: 3)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal, 18)
+
+                        // Missing items list
+                        if vm.items.isEmpty {
+                            VStack(spacing: 8) {
+                                Image(systemName: "cart")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(.borderColor)
+                                Text("Rien a acheter")
+                                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.subtitleText)
+                                Text("Ajoutez des articles depuis le catalogue")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.lightText)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 32)
+                            .background(Color.white)
+                            .cornerRadius(22)
+                            .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
+                            .padding(.horizontal, 18)
                         } else {
-                            itemsList
+                            VStack(spacing: 0) {
+                                ForEach(vm.items) { item in
+                                    HStack(spacing: 12) {
+                                        Circle()
+                                            .fill(Color.greenPrimary)
+                                            .frame(width: 8, height: 8)
+                                        Text(item.name)
+                                            .font(.system(size: 14, weight: .medium))
+                                            .foregroundColor(.bodyText)
+                                        Spacer()
+                                        Text("x\(item.quantity)")
+                                            .font(.system(size: 13, weight: .semibold))
+                                            .foregroundColor(.subtitleText)
+                                        Button { vm.delete(item: item) } label: {
+                                            Image(systemName: "trash")
+                                                .font(.system(size: 14))
+                                                .foregroundColor(.coralRed)
+                                                .padding(6)
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 12)
+
+                                    if item.id != vm.items.last?.id {
+                                        Divider().padding(.leading, 36)
+                                    }
+                                }
+                            }
+                            .background(Color.white)
+                            .cornerRadius(22)
+                            .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
+                            .padding(.horizontal, 18)
+                        }
+
+                        // Admin catalogue management
+                        if vm.isAdmin {
+                            VStack(alignment: .leading, spacing: 0) {
+                                HStack {
+                                    Text("Gerer le catalogue")
+                                        .font(.system(size: 17, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.darkText)
+                                    Spacer()
+                                    Button { showAddCatalogDialog = true } label: {
+                                        Image(systemName: "plus")
+                                            .font(.system(size: 16, weight: .semibold))
+                                            .foregroundColor(.greenPrimary)
+                                            .padding(6)
+                                    }
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.top, 14)
+                                .padding(.bottom, 8)
+
+                                if vm.catalogArticles.isEmpty {
+                                    Text("Aucun article dans le catalogue")
+                                        .font(.system(size: 13))
+                                        .foregroundColor(.subtitleText)
+                                        .padding(.horizontal, 16)
+                                        .padding(.bottom, 14)
+                                } else {
+                                    ForEach(vm.catalogArticles) { article in
+                                        HStack(spacing: 10) {
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(article.name)
+                                                    .font(.system(size: 14, weight: .semibold))
+                                                    .foregroundColor(.bodyText)
+                                                Text(article.category)
+                                                    .font(.system(size: 12))
+                                                    .foregroundColor(.subtitleText)
+                                            }
+                                            Spacer()
+                                            Button { vm.deleteCatalogArticle(id: article.id) } label: {
+                                                Image(systemName: "trash")
+                                                    .font(.system(size: 14))
+                                                    .foregroundColor(.coralRed)
+                                                    .padding(8)
+                                            }
+                                            .buttonStyle(.plain)
+                                        }
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 10)
+                                        Divider().padding(.leading, 16)
+                                    }
+                                }
+                            }
+                            .background(Color.white)
+                            .cornerRadius(22)
+                            .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
+                            .padding(.horizontal, 18)
                         }
                     }
-                }
 
-                // Add item sheet handle
-                if showAddItem {
-                    addItemPanel
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                    Spacer(minLength: 80)
                 }
             }
+            .refreshable { await vm.refresh() }
             .background(Color.screenBackground.ignoresSafeArea())
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbar(.hidden, for: .navigationBar)
             .onAppear { vm.load() }
-            .animation(.spring(response: 0.35), value: showAddItem)
             .toast(message: Binding(
                 get: { vm.errorMessage },
                 set: { vm.errorMessage = $0 }
             ), type: .error)
-        }
-    }
-
-    private var emptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "cart")
-                .font(.system(size: 48))
-                .foregroundColor(.borderColor)
-            Text("Liste vide")
-                .font(.system(size: 18, weight: .semibold, design: .rounded))
-                .foregroundColor(.subtitleText)
-            Text("Ajoute des articles pour commencer")
-                .font(.system(size: 14))
-                .foregroundColor(.lightText)
-        }
-        .padding(60)
-    }
-
-    private var itemsList: some View {
-        VStack(spacing: 0) {
-            if !vm.uncheckedItems.isEmpty {
-                sectionHeader("À acheter (\(vm.uncheckedItems.count))")
-                ForEach(vm.uncheckedItems) { item in
-                    ShoppingItemRow(item: item, onToggle: { vm.toggle(item: item) }, onDelete: { vm.delete(item: item) })
+            .toast(message: Binding(
+                get: { vm.successMessage },
+                set: { vm.successMessage = $0 }
+            ), type: .success)
+            .sheet(isPresented: $showAddCatalogDialog) {
+                AddCatalogArticleSheet { name, category in
+                    vm.addCatalogArticle(name: name, category: category)
                 }
             }
-            if !vm.checkedItems.isEmpty {
-                sectionHeader("Dans le panier (\(vm.checkedItems.count))")
-                ForEach(vm.checkedItems) { item in
-                    ShoppingItemRow(item: item, onToggle: { vm.toggle(item: item) }, onDelete: { vm.delete(item: item) })
+            .sheet(isPresented: $showCatalogPicker) {
+                CatalogPickerSheet(articles: vm.catalogArticles) { article in
+                    showCatalogPicker = false
+                    selectedArticle = article
+                    quantityInput = 1
+                }
+            }
+            .sheet(item: $selectedArticle) { article in
+                QuantityPickerSheet(articleName: article.name, quantity: $quantityInput) {
+                    vm.addItem(name: article.name, quantity: quantityInput, assigneeId: nil)
+                    selectedArticle = nil
                 }
             }
         }
-        .padding(.bottom, 100)
-    }
-
-    private func sectionHeader(_ title: String) -> some View {
-        Text(title)
-            .font(.system(size: 13, weight: .semibold))
-            .foregroundColor(.subtitleText)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 18)
-            .padding(.top, 16)
-            .padding(.bottom, 6)
-    }
-
-    private var addItemPanel: some View {
-        VStack(spacing: 0) {
-            Color.black.opacity(0.2)
-                .ignoresSafeArea()
-                .onTapGesture { showAddItem = false }
-
-            VStack(spacing: 16) {
-                Capsule().fill(Color.borderColor).frame(width: 40, height: 4)
-                    .padding(.top, 8)
-
-                Text("Ajouter un article")
-                    .font(.system(size: 18, weight: .semibold, design: .rounded))
-                    .foregroundColor(.darkText)
-
-                AppTextField(placeholder: "Nom de l'article", text: $newItemName)
-
-                HStack {
-                    Text("Quantité")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.subtitleText)
-                    Spacer()
-                    HStack(spacing: 16) {
-                        Button { if newItemQty > 1 { newItemQty -= 1 } } label: {
-                            Image(systemName: "minus")
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundColor(.darkText)
-                                .frame(width: 32, height: 32)
-                                .background(Color.lightCardBg)
-                                .cornerRadius(10)
-                        }
-                        Text("\(newItemQty)")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.darkText)
-                            .frame(minWidth: 24)
-                        Button { newItemQty += 1 } label: {
-                            Image(systemName: "plus")
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundColor(.white)
-                                .frame(width: 32, height: 32)
-                                .background(Color.greenPrimary)
-                                .cornerRadius(10)
-                        }
-                    }
-                }
-
-                PrimaryButton(title: "Ajouter", disabled: newItemName.isEmpty) {
-                    vm.addItem(name: newItemName, quantity: newItemQty, assigneeId: selectedAssigneeId)
-                    newItemName = ""
-                    newItemQty = 1
-                    showAddItem = false
-                }
-
-                Spacer(minLength: 20)
-            }
-            .padding(.horizontal, 24)
-            .padding(.top, 8)
-            .background(Color.white)
-            .cornerRadius(28, corners: [.topLeft, .topRight])
-        }
-        .frame(maxHeight: .infinity, alignment: .bottom)
-        .ignoresSafeArea()
     }
 }
 
-// MARK: - Shopping Item Row
-struct ShoppingItemRow: View {
-    let item: ShoppingItemResponse
-    let onToggle: () -> Void
-    let onDelete: () -> Void
+// MARK: - Catalogue Picker Sheet
+struct CatalogPickerSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let articles: [CatalogArticle]
+    let onSelect: (CatalogArticle) -> Void
 
     var body: some View {
-        HStack(spacing: 12) {
-            Button(action: onToggle) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 7)
-                        .stroke(item.isChecked ? Color.greenPrimary : Color.borderColor, lineWidth: 1.5)
-                        .frame(width: 22, height: 22)
-                    if item.isChecked {
-                        Image(systemName: "checkmark")
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundColor(.greenPrimary)
+        NavigationStack {
+            Group {
+                if articles.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "cart")
+                            .font(.system(size: 40))
+                            .foregroundColor(.borderColor)
+                        Text("Le catalogue est vide")
+                            .font(.system(size: 16, weight: .semibold, design: .rounded))
+                            .foregroundColor(.subtitleText)
+                        Text("L'admin doit d'abord ajouter des articles")
+                            .font(.system(size: 13))
+                            .foregroundColor(.lightText)
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    List(articles) { article in
+                        Button {
+                            onSelect(article)
+                        } label: {
+                            HStack(spacing: 12) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.greenPrimary.opacity(0.1))
+                                        .frame(width: 40, height: 40)
+                                    Image(systemName: "cart")
+                                        .font(.system(size: 15))
+                                        .foregroundColor(.greenPrimary)
+                                }
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(article.name)
+                                        .font(.system(size: 15, weight: .semibold))
+                                        .foregroundColor(.darkText)
+                                    Text(article.category)
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.subtitleText)
+                                }
+                                Spacer()
+                                Image(systemName: "plus")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(.greenPrimary)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .listStyle(.plain)
                 }
             }
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.name)
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundColor(item.isChecked ? .lightText : .bodyText)
-                    .strikethrough(item.isChecked, color: .lightText)
-                if let assignee = item.assignee {
-                    Text(assignee.name)
-                        .font(.system(size: 12))
-                        .foregroundColor(.subtitleText)
+            .navigationTitle("Choisir un article")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Fermer") { dismiss() }
                 }
-            }
-            Spacer()
-            Text("×\(item.quantity)")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(.subtitleText)
-
-            Button(action: onDelete) {
-                Image(systemName: "trash")
-                    .font(.system(size: 14))
-                    .foregroundColor(.coralRed)
-                    .padding(8)
             }
         }
-        .padding(.horizontal, 18)
-        .padding(.vertical, 12)
-        .background(Color.white)
-        .overlay(Divider().padding(.leading, 18), alignment: .bottom)
+    }
+}
+
+// MARK: - Quantity Picker Sheet
+struct QuantityPickerSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let articleName: String
+    @Binding var quantity: Int
+    let onConfirm: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 24) {
+                Text(articleName)
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundColor(.darkText)
+
+                HStack(spacing: 20) {
+                    Text("Quantite")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.subtitleText)
+                    Spacer()
+                    Button { if quantity > 1 { quantity -= 1 } } label: {
+                        Image(systemName: "minus")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.darkText)
+                            .frame(width: 36, height: 36)
+                            .background(Color.lightCardBg)
+                            .cornerRadius(10)
+                    }
+                    Text("\(quantity)")
+                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .foregroundColor(.darkText)
+                        .frame(minWidth: 28)
+                    Button { quantity += 1 } label: {
+                        Image(systemName: "plus")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.white)
+                            .frame(width: 36, height: 36)
+                            .background(Color.greenPrimary)
+                            .cornerRadius(10)
+                    }
+                }
+
+                Button {
+                    onConfirm()
+                    dismiss()
+                } label: {
+                    Text("Ajouter")
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(Color.greenPrimary)
+                        .cornerRadius(14)
+                }
+
+                Spacer()
+            }
+            .padding(24)
+            .navigationTitle("Ajouter a la liste")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Annuler") { dismiss() }
+                }
+            }
+            .presentationDetents([.height(260)])
+        }
+    }
+}
+
+// MARK: - Add Catalog Article Sheet
+struct AddCatalogArticleSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let onDone: (String, String) -> Void
+
+    let categories = ["Alimentation", "Hygiène", "Ménage", "Boissons", "Autre"]
+    @State private var name = ""
+    @State private var selectedCategory = "Alimentation"
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Nom") { TextField("Ex: Lait", text: $name) }
+                Section("Categorie") {
+                    Picker("Categorie", selection: $selectedCategory) {
+                        ForEach(categories, id: \.self) { Text($0) }
+                    }
+                    .pickerStyle(.menu)
+                }
+            }
+            .navigationTitle("Nouvel article")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("Annuler") { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Ajouter") {
+                        onDone(name.trimmingCharacters(in: .whitespaces), selectedCategory)
+                        dismiss()
+                    }
+                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
+        }
     }
 }
 

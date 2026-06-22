@@ -2,8 +2,6 @@ import SwiftUI
 
 struct RotationView: View {
     @StateObject private var vm: RotationViewModel
-    @State private var swapMode = false
-    @State private var selectedForSwap: RotationEntryResponse?
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: RotationViewModel(tokenManager: tokenManager))
@@ -19,6 +17,9 @@ struct RotationView: View {
                 } else {
                     headerCard
                     entriesList
+                    if vm.isAdmin && vm.hasReordered {
+                        saveButton
+                    }
                 }
             }
             .padding(.horizontal, 18)
@@ -28,21 +29,15 @@ struct RotationView: View {
         .background(Color.screenBackground.ignoresSafeArea())
         .navigationTitle("Rotation")
         .navigationBarTitleDisplayMode(.large)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(swapMode ? "Annuler" : "Échanger") {
-                    swapMode.toggle()
-                    selectedForSwap = nil
-                }
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(swapMode ? .coralRed : .greenPrimary)
-            }
-        }
         .onAppear { vm.load() }
         .toast(message: Binding(
             get: { vm.errorMessage },
             set: { vm.errorMessage = $0 }
         ), type: .error)
+        .toast(message: Binding(
+            get: { vm.successMessage },
+            set: { vm.successMessage = $0 }
+        ), type: .success)
     }
 
     private var emptyState: some View {
@@ -50,13 +45,32 @@ struct RotationView: View {
             Image(systemName: "arrow.triangle.2.circlepath")
                 .font(.system(size: 48))
                 .foregroundColor(.borderColor)
-            Text("Aucune rotation")
+            Text("Aucun ordre de passage")
                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                 .foregroundColor(.subtitleText)
-            Text("La rotation sera générée par l'administrateur.")
-                .font(.system(size: 14))
-                .foregroundColor(.lightText)
-                .multilineTextAlignment(.center)
+            if vm.isAdmin {
+                Text("Generez l'ordre pour lancer la rotation.")
+                    .font(.system(size: 14))
+                    .foregroundColor(.lightText)
+                    .multilineTextAlignment(.center)
+                Button {
+                    vm.generate()
+                } label: {
+                    Text("Generer l'ordre")
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 13)
+                        .background(Color.greenPrimary)
+                        .cornerRadius(14)
+                }
+                .buttonStyle(.plain)
+            } else {
+                Text("L'administrateur doit generer l'ordre.")
+                    .font(.system(size: 14))
+                    .foregroundColor(.lightText)
+                    .multilineTextAlignment(.center)
+            }
         }
         .padding(60)
     }
@@ -64,7 +78,7 @@ struct RotationView: View {
     private var headerCard: some View {
         let current = vm.entries.first { $0.status == "current" }
         return VStack(alignment: .leading, spacing: 8) {
-            Text("Cette semaine")
+            Text("Prochain aux courses")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundColor(.white.opacity(0.85))
             if let entry = current {
@@ -85,6 +99,9 @@ struct RotationView: View {
                     }
                 }
             }
+            Text("Le tour avance apres l'ajout d'un ticket")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(.white.opacity(0.7))
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -97,41 +114,79 @@ struct RotationView: View {
         VStack(spacing: 0) {
             ForEach(Array(vm.entries.enumerated()), id: \.element.id) { index, entry in
                 let isCurrent = entry.status == "current"
+                let isDisabled = entry.isDisabled == true
                 let isMe = entry.user.id == vm.currentUserId
-                let isSelected = selectedForSwap?.id == entry.id
 
-                HStack(spacing: 14) {
+                HStack(spacing: 10) {
                     Text("\(index + 1)")
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundColor(.lightText)
                         .frame(width: 20)
 
                     RoommateAvatar(user: entry.user, size: 40, cornerRadius: 13)
+                        .opacity(isDisabled ? 0.45 : 1)
 
-                    VStack(alignment: .leading, spacing: 2) {
-                        HStack(spacing: 6) {
-                            Text(entry.user.name)
-                                .font(.system(size: 15, weight: .semibold))
-                                .foregroundColor(.darkText)
-                            if isMe {
-                                Text("moi")
-                                    .font(.system(size: 10, weight: .semibold))
-                                    .foregroundColor(.greenPrimary)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(Color.greenPrimary.opacity(0.12))
-                                    .cornerRadius(6)
-                            }
-                        }
-                        if let start = entry.weekStart?.prefix(10), let end = entry.weekEnd?.prefix(10) {
-                            Text("\(start) - \(end)")
-                                .font(.system(size: 11))
-                                .foregroundColor(.subtitleText)
+                    HStack(spacing: 6) {
+                        Text(entry.user.name)
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundColor(isDisabled ? .subtitleText : .darkText)
+                        if isMe {
+                            Text("moi")
+                                .font(.system(size: 10, weight: .semibold))
+                                .foregroundColor(.greenPrimary)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color.greenPrimary.opacity(0.12))
+                                .cornerRadius(6)
                         }
                     }
                     Spacer()
 
-                    if isCurrent {
+                    if vm.isAdmin {
+                        Button { vm.toggleMemberActive(userId: entry.user.id) } label: {
+                            Text(isDisabled ? "Activer" : "Desactiver")
+                                .font(.system(size: 11, weight: .semibold))
+                                .foregroundColor(isDisabled ? .greenPrimary : Color(hex: "#FFB020"))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(isDisabled ? Color.greenPrimary.opacity(0.12) : Color(hex: "#FFB020").opacity(0.12))
+                                .cornerRadius(20)
+                        }
+                        .buttonStyle(.plain)
+
+                        if index > 0 {
+                            Button { vm.moveEntry(from: index, to: index - 1) } label: {
+                                Image(systemName: "chevron.up")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundColor(.darkText)
+                                    .frame(width: 28, height: 28)
+                                    .background(Color.lightCardBg)
+                                    .cornerRadius(8)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        if index < vm.entries.count - 1 {
+                            Button { vm.moveEntry(from: index, to: index + 1) } label: {
+                                Image(systemName: "chevron.down")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundColor(.darkText)
+                                    .frame(width: 28, height: 28)
+                                    .background(Color.lightCardBg)
+                                    .cornerRadius(8)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+
+                    if isDisabled {
+                        Text("Absent")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundColor(Color(hex: "#FFB020"))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color(hex: "#FFB020").opacity(0.12))
+                            .cornerRadius(8)
+                    } else if isCurrent {
                         Text("En cours")
                             .font(.system(size: 11, weight: .semibold))
                             .foregroundColor(.greenPrimary)
@@ -139,30 +194,16 @@ struct RotationView: View {
                             .padding(.vertical, 4)
                             .background(Color.greenPrimary.opacity(0.12))
                             .cornerRadius(8)
+                    } else {
+                        Text("A venir")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundColor(.subtitleText)
                     }
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
-                .background(
-                    isSelected ? Color.appBlue.opacity(0.1) :
-                    isCurrent ? Color.greenPrimary.opacity(0.05) : Color.white
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 0)
-                        .stroke(isSelected ? Color.appBlue : Color.clear, lineWidth: 2)
-                )
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    guard swapMode else { return }
-                    if selectedForSwap == nil {
-                        // Select my entry first, then swap target
-                        if isMe { selectedForSwap = entry }
-                    } else if let mine = selectedForSwap, mine.id != entry.id {
-                        vm.swap(myEntry: mine, theirEntry: entry)
-                        swapMode = false
-                        selectedForSwap = nil
-                    }
-                }
+                .background(isCurrent ? Color.greenPrimary.opacity(0.05) : Color.white)
+
                 if index < vm.entries.count - 1 {
                     Divider().padding(.leading, 70)
                 }
@@ -171,6 +212,30 @@ struct RotationView: View {
         .background(Color.white)
         .cornerRadius(22)
         .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
+    }
 
+    private var saveButton: some View {
+        Button {
+            vm.saveOrder()
+        } label: {
+            if vm.isSaving {
+                ProgressView()
+                    .tint(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 15)
+                    .background(Color.greenPrimary)
+                    .cornerRadius(18)
+            } else {
+                Text("Sauvegarder l'ordre")
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 15)
+                    .background(Color.greenPrimary)
+                    .cornerRadius(18)
+            }
+        }
+        .buttonStyle(.plain)
+        .disabled(vm.isSaving)
     }
 }

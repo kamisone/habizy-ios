@@ -60,7 +60,6 @@ extension UserResponse: Equatable {
 
 struct CreateColocationRequest: Encodable {
     let name: String
-    let contributionAmount: Double?
 }
 
 struct JoinColocationRequest: Encodable {
@@ -70,11 +69,10 @@ struct JoinColocationRequest: Encodable {
 struct ColocationResponse: Decodable, Identifiable {
     let id: String
     let name: String
-    let contributionAmount: Double?
     let inviteCode: String?
-    let currentCycle: Int?
     let createdAt: String?
-    let lowBalanceThreshold: Double?
+    let spendingGapThreshold: Double?
+    let notificationsEnabled: Bool?
 }
 
 struct ColocationMemberResponse: Decodable, Identifiable {
@@ -84,22 +82,15 @@ struct ColocationMemberResponse: Decodable, Identifiable {
     let joinedAt: String?
 }
 
-struct BalanceResponse: Decodable {
-    let balance: Double
-    let totalContributed: Double
-    let totalSpent: Double
-}
-
 struct ColocationDetailResponse: Decodable {
     let colocation: ColocationResponse
     let members: [ColocationMemberResponse]
-    let balance: BalanceResponse
 }
 
 struct UpdateColocationRequest: Encodable {
     let name: String?
-    let contributionAmount: Double?
-    let lowBalanceThreshold: Double?
+    let spendingGapThreshold: Double?
+    let notificationsEnabled: Bool?
 }
 
 struct AddMemberRequest: Encodable {
@@ -107,6 +98,10 @@ struct AddMemberRequest: Encodable {
     let email: String
     let password: String?
     let colorHex: String?
+}
+
+struct SetPurchaseOrderRequest: Encodable {
+    let userIds: [String]
 }
 
 // MARK: - Contribution Models
@@ -136,6 +131,22 @@ struct CycleStatusResponse: Decodable {
     let contributions: [ContributionStatusItem]
 }
 
+// MARK: - Catalog Models
+
+struct CatalogArticle: Decodable, Identifiable {
+    let id: String
+    let name: String
+    let category: String
+    let colocationId: String
+    let createdAt: String?
+}
+
+struct CreateCatalogArticleRequest: Encodable {
+    let name: String
+    let category: String
+    let colocationId: String
+}
+
 // MARK: - Receipt Models
 
 struct CreateReceiptItemRequest: Encodable {
@@ -149,7 +160,9 @@ struct CreateReceiptRequest: Encodable {
     let colocationId: String
     let store: String
     let date: String
+    let time: String?
     let totalAmount: Double
+    let photoUrl: String?
     let items: [CreateReceiptItemRequest]
 }
 
@@ -165,10 +178,28 @@ struct ReceiptResponse: Decodable, Identifiable {
     let id: String
     let store: String
     let date: String
+    let time: String?
     let totalAmount: Double
+    let photoUrl: String?
     let user: UserResponse
     let items: [ReceiptItemResponse]
     let createdAt: String?
+}
+
+struct ArticleSuggestion: Decodable, Identifiable {
+    var id: String { name }
+    let name: String
+    let category: String
+    let lastPrice: Double
+}
+
+struct ArticleStat: Decodable, Identifiable {
+    var id: String { name }
+    let name: String
+    let category: String
+    let totalAmount: Double
+    let totalQuantity: Int
+    let fraction: Double
 }
 
 struct CategoryStat: Decodable, Identifiable {
@@ -221,6 +252,20 @@ struct NotificationResponse: Decodable, Identifiable {
     let createdAt: String?
 }
 
+// MARK: - Storage Models
+
+struct SignedUploadUrlRequest: Encodable {
+    let folder: String
+    let fileName: String
+    let contentType: String
+}
+
+struct SignedUploadUrlResponse: Decodable {
+    let uploadUrl: String
+    let publicUrl: String
+    let key: String
+}
+
 // MARK: - Rotation Models
 
 struct SwapRotationRequest: Encodable {
@@ -235,4 +280,5 @@ struct RotationEntryResponse: Decodable, Identifiable {
     let weekEnd: String?
     let orderIndex: Int
     let status: String?
+    let isDisabled: Bool?
 }

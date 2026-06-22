@@ -191,6 +191,11 @@ final class APIService {
         try await requestVoid("auth/change-password", method: "POST", body: body)
     }
 
+    func updateName(name: String) async throws -> UserResponse {
+        struct Body: Encodable { let name: String }
+        return try await request("auth/me", method: "PATCH", body: Body(name: name))
+    }
+
     func getMe() async throws -> UserResponse {
         try await request("auth/me")
     }
@@ -229,18 +234,12 @@ final class APIService {
         try await requestVoid("colocations/\(colocationId)/members/\(userId)", method: "DELETE")
     }
 
-    func getBalance(colocationId: String) async throws -> BalanceResponse {
-        try await request("colocations/\(colocationId)/balance")
+    func setPurchaseOrder(colocationId: String, userIds: [String]) async throws -> ColocationResponse {
+        try await request("colocations/\(colocationId)/purchase-order", method: "PUT", body: SetPurchaseOrderRequest(userIds: userIds))
     }
 
-    // MARK: - Contribution Endpoints
-
-    func createContribution(body: CreateContributionRequest) async throws -> ContributionResponse {
-        try await request("contributions", method: "POST", body: body)
-    }
-
-    func getCycleStatus(colocationId: String) async throws -> CycleStatusResponse {
-        try await request("contributions/cycle/\(colocationId)")
+    func toggleMemberActive(colocationId: String, userId: String) async throws {
+        try await requestVoid("colocations/\(colocationId)/members/\(userId)/toggle-active", method: "PATCH")
     }
 
     // MARK: - Shopping Endpoints
@@ -261,6 +260,13 @@ final class APIService {
         try await requestVoid("shopping/\(id)", method: "DELETE")
     }
 
+    // MARK: - Storage Endpoints
+
+    func getSignedUploadUrl(folder: String, fileName: String, contentType: String) async throws -> SignedUploadUrlResponse {
+        let body = SignedUploadUrlRequest(folder: folder, fileName: fileName, contentType: contentType)
+        return try await request("storage/signed-upload-url", method: "POST", body: body)
+    }
+
     // MARK: - Receipt Endpoints
 
     func createReceipt(body: CreateReceiptRequest) async throws -> ReceiptResponse {
@@ -273,6 +279,32 @@ final class APIService {
 
     func getExpenseStats(colocationId: String) async throws -> ExpenseStatsResponse {
         try await request("receipts/\(colocationId)/stats")
+    }
+
+    func deleteReceipt(id: String) async throws {
+        try await requestVoid("receipts/\(id)", method: "DELETE")
+    }
+
+    func getArticleCatalog(colocationId: String) async throws -> [ArticleSuggestion] {
+        try await request("receipts/\(colocationId)/articles")
+    }
+
+    func getArticleStats(colocationId: String) async throws -> [ArticleStat] {
+        try await request("receipts/\(colocationId)/articles/stats")
+    }
+
+    // MARK: - Catalog Endpoints
+
+    func getCatalogArticles(colocationId: String) async throws -> [CatalogArticle] {
+        try await request("catalog/\(colocationId)")
+    }
+
+    func createCatalogArticle(body: CreateCatalogArticleRequest) async throws -> CatalogArticle {
+        try await request("catalog", method: "POST", body: body)
+    }
+
+    func deleteCatalogArticle(id: String) async throws {
+        try await requestVoid("catalog/\(id)", method: "DELETE")
     }
 
     // MARK: - Rotation Endpoints

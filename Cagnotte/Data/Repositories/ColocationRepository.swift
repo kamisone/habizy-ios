@@ -16,13 +16,13 @@ final class ColocationRepository {
         return detail
     }
 
-    func createColocation(name: String, contributionAmount: Double? = nil) async throws -> ColocationResponse {
-        let body = CreateColocationRequest(name: name, contributionAmount: contributionAmount)
+    func createColocation(name: String) async throws -> ColocationResponse {
+        let body = CreateColocationRequest(name: name)
         return try await api.createColocation(body: body)
     }
 
-    func updateColocation(id: String, name: String? = nil, contributionAmount: Double? = nil, lowBalanceThreshold: Double? = nil) async throws -> ColocationResponse {
-        let body = UpdateColocationRequest(name: name, contributionAmount: contributionAmount, lowBalanceThreshold: lowBalanceThreshold)
+    func updateColocation(id: String, name: String? = nil, spendingGapThreshold: Double? = nil, notificationsEnabled: Bool? = nil) async throws -> ColocationResponse {
+        let body = UpdateColocationRequest(name: name, spendingGapThreshold: spendingGapThreshold, notificationsEnabled: notificationsEnabled)
         return try await api.updateColocation(id: id, body: body)
     }
 
@@ -33,9 +33,5 @@ final class ColocationRepository {
 
     func removeMember(colocationId: String, userId: String) async throws {
         try await api.removeMember(colocationId: colocationId, userId: userId)
-    }
-
-    func getBalance(colocationId: String) async throws -> BalanceResponse {
-        try await api.getBalance(colocationId: colocationId)
     }
 }
