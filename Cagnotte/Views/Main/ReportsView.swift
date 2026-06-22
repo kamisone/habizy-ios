@@ -44,7 +44,7 @@ struct ReportsView: View {
                         .padding(.horizontal, 18).padding(.top, 16)
 
                     if vm.isLoading {
-                        ProgressView().tint(.greenPrimary).padding(40)
+                        ShimmerReportsLoading()
                     } else {
                         // Create button
                         Button { showCreateReport = true } label: {
@@ -69,19 +69,12 @@ struct ReportsView: View {
 
                         // Reports list
                         if vm.reports.isEmpty {
-                            VStack(spacing: 8) {
-                                Image(systemName: "flag").font(.system(size: 40)).foregroundColor(.borderColor)
-                                Text("Aucun signalement").font(.system(size: 16, weight: .semibold, design: .rounded)).foregroundColor(.subtitleText)
-                                Text("Tout va bien !").font(.system(size: 13)).foregroundColor(.lightText)
-                            }
-                            .frame(maxWidth: .infinity).padding(.vertical, 32)
-                            .background(Color.white).cornerRadius(22)
-                            .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
-                            .padding(.horizontal, 18)
+                            BreathingEmptyState(icon: "flag", title: "Aucun signalement", subtitle: "Tout va bien !")
+                                .padding(.horizontal, 18)
                         } else {
                             VStack(spacing: 0) {
                                 ForEach(vm.reports) { report in
-                                    Button { selectedReportId = report.id } label: { ReportCardView(report: report) }.buttonStyle(.plain)
+                                    Button { selectedReportId = report.id } label: { ReportCardView(report: report) }.buttonStyle(PressableButtonStyle())
                                     if report.id != vm.reports.last?.id { Divider().padding(.leading, 80) }
                                 }
                             }

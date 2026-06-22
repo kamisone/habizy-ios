@@ -17,21 +17,16 @@ struct LoginView: View {
                 ZStack {
                     LinearGradient.greenVertical
                         .ignoresSafeArea(edges: .top)
-                    VStack(spacing: 4) {
-                        Text("Cagnotte")
-                            .font(.system(size: 30, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
-                        Text("Coloc")
-                            .font(.system(size: 17, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white.opacity(0.85))
-                    }
-                    .padding(.vertical, 28)
+                    Text("Habizy")
+                        .font(.system(size: 30, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                    .padding(.vertical, 16)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 0))
                 .overlay(
                     RoundedRectangle(cornerRadius: 36)
                         .fill(Color.screenBackground)
-                        .offset(y: 130)
+                        .offset(y: 90)
                 )
 
                 VStack(spacing: 16) {
@@ -146,13 +141,13 @@ struct AppTextField: View {
     }
 }
 
-enum ButtonStyle { case primary, dark }
+enum AppButtonStyle { case primary, dark }
 
 struct PrimaryButton: View {
     let title: String
     var isLoading: Bool = false
     var disabled: Bool = false
-    var style: ButtonStyle = .primary
+    var style: AppButtonStyle = .primary
     let action: () -> Void
 
     private var bgColor: Color {

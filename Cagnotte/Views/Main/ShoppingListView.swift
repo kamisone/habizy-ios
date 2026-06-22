@@ -202,7 +202,7 @@ struct ShoppingListView: View {
 }
 
 // MARK: - Catalogue Picker Sheet
-struct CatalogPickerSheet: View {
+private struct CatalogPickerSheet: View {
     @Environment(\.dismiss) private var dismiss
     let articles: [CatalogArticle]
     let onSelect: (CatalogArticle) -> Void

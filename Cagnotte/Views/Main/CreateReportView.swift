@@ -132,6 +132,6 @@ struct WrappingHStack<Content: View>: View {
     }
 
     var body: some View {
-        FlowLayout(spacing: spacing) { content() }
+        FlowLayoutView(spacing: spacing) { content() }
     }
 }

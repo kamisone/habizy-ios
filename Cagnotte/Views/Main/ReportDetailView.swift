@@ -217,33 +217,6 @@ struct FlowLayoutView<Content: View>: View {
     @ViewBuilder let content: () -> Content
 
     var body: some View {
-        _VariadicView.Tree(FlowLayoutHelper(spacing: spacing)) { content() }
-    }
-}
-
-private struct FlowLayoutHelper: _VariadicView_MultiViewRoot {
-    let spacing: CGFloat
-    func body(children: _VariadicView.Children) -> some View {
-        var width: CGFloat = 0
-        var rows: [[_VariadicView.Children.Element]] = [[]]
-        GeometryReader { geo in
-            Color.clear.onAppear {
-                for child in children {
-                    let size = child.sizeThatFits(.unspecified)
-                    if width + size.width > geo.size.width && !rows[rows.count - 1].isEmpty {
-                        rows.append([])
-                        width = 0
-                    }
-                    rows[rows.count - 1].append(child)
-                    width += size.width + spacing
-                }
-            }
-        }
-        .frame(height: 0)
-        VStack(alignment: .leading, spacing: spacing) {
-            ForEach(Array(children.enumerated()), id: \.offset) { _, child in
-                child
-            }
-        }
+        content()
     }
 }

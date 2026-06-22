@@ -54,10 +54,8 @@ struct HomeView: View {
     }
 
     private var loadingView: some View {
-        VStack {
-            Spacer()
-            ProgressView().tint(.greenPrimary)
-            Spacer()
+        ScrollView {
+            ShimmerHomeLoading()
         }
     }
 
@@ -235,8 +233,10 @@ struct HomeView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(reports) { report in
-                        ReportCardView(report: report)
-                            .onTapGesture { selectedReportId = ReportNavItem(id: report.id) }
+                        Button { selectedReportId = ReportNavItem(id: report.id) } label: {
+                            ReportCardView(report: report)
+                        }
+                        .buttonStyle(PressableButtonStyle())
                     }
                 }
                 .padding(.trailing, 4)
@@ -251,15 +251,11 @@ struct HomeView: View {
                 Text("Dépenses de la coloc")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(.white.opacity(0.9))
-                HStack(alignment: .bottom, spacing: 6) {
-                    Text(String(format: "%.2f", data.totalSpent).replacingOccurrences(of: ".", with: ","))
-                        .font(.system(size: 48, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
-                    Text("€")
-                        .font(.system(size: 24, weight: .semibold, design: .rounded))
-                        .foregroundColor(.white)
-                        .padding(.bottom, 6)
-                }
+                CountingText(
+                    targetValue: data.totalSpent,
+                    font: .system(size: 48, weight: .bold, design: .rounded),
+                    color: .white
+                )
                 .padding(.top, 6)
                 Text("\(data.memberCount) colocataires · total cumulé")
                     .font(.system(size: 13, weight: .medium))
@@ -373,7 +369,7 @@ private struct QuickActionCard: View {
             .cornerRadius(18)
             .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressableButtonStyle())
     }
 }
 

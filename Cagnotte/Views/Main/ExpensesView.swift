@@ -21,7 +21,7 @@ struct ExpensesView: View {
                         .padding(.top, 16)
 
                     if vm.isLoading {
-                        ProgressView().tint(.greenPrimary).padding(40)
+                        ShimmerExpensesLoading()
                     } else {
                         if !vm.isMyTurn && !vm.currentPurchaserName.isEmpty {
                             HStack(spacing: 10) {
