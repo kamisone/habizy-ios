@@ -325,14 +325,29 @@ final class APIService {
         try await request("rotations/swap", method: "PATCH", body: body)
     }
 
+    // MARK: - Device Endpoints
+
+    func registerDevice(platform: String, token: String) async throws {
+        struct Body: Encodable { let platform: String; let token: String }
+        try await requestVoid("devices/register", method: "POST", body: Body(platform: platform, token: token))
+    }
+
+    func unregisterDevice(token: String) async throws {
+        try await requestVoid("devices/\(token)", method: "DELETE")
+    }
+
     // MARK: - Notification Endpoints
 
     func getNotifications() async throws -> [NotificationResponse] {
         try await request("notifications")
     }
 
-    func getNotificationsSince(lastId: String) async throws -> [NotificationResponse] {
-        try await request("notifications/since/\(lastId)")
+    func getUnreadCount() async throws -> UnreadCountResponse {
+        try await request("notifications/unread-count")
+    }
+
+    func markAllNotificationsRead() async throws {
+        try await requestVoid("notifications/read-all", method: "PATCH")
     }
 
     func markNotificationRead(id: String) async throws {

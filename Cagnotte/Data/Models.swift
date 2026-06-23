@@ -246,10 +246,18 @@ struct ShoppingItemResponse: Decodable, Identifiable {
 struct NotificationResponse: Decodable, Identifiable {
     let id: String
     let type: String
+    let title: String?
+    let body: String?
     let message: String
     let isRead: Bool
+    let readAt: String?
     let actor: UserResponse?
+    let data: [String: String]?
     let createdAt: String?
+}
+
+struct UnreadCountResponse: Decodable {
+    let count: Int
 }
 
 // MARK: - Storage Models

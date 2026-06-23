@@ -29,6 +29,7 @@ final class AuthViewModel: ObservableObject {
                 if resp.profileCompleted == nil {
                     tokenManager?.saveProfileCompleted(true)
                 }
+                await registerFcmToken()
             } catch {
                 loginError = error.localizedDescription
             }
@@ -50,7 +51,21 @@ final class AuthViewModel: ObservableObject {
     }
 
     func logout() {
+        Task {
+            if let token = UserDefaults.standard.string(forKey: "fcm_token"),
+               let tm = tokenManager {
+                let api = APIService.configure(tokenManager: tm)
+                try? await api.unregisterDevice(token: token)
+            }
+        }
         authRepo?.logout()
+    }
+
+    private func registerFcmToken() async {
+        guard let tm = tokenManager,
+              let fcmToken = UserDefaults.standard.string(forKey: "fcm_token") else { return }
+        let api = APIService.configure(tokenManager: tm)
+        try? await api.registerDevice(platform: "ios", token: fcmToken)
     }
 
     func deleteAccountAndLogout() {

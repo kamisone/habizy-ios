@@ -66,7 +66,6 @@
 		A1A1A1A10000000AA1A1A1A1 /* CountingText.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A2A2A20000000AA2A2A2A2 /* CountingText.swift */; };
 		A1A1A1A10000000BA1A1A1A1 /* BreathingEmptyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A2A2A20000000BA2A2A2A2 /* BreathingEmptyState.swift */; };
 		B4B4B4B400000001B4B4B4B4 /* logo_habizy.png in Resources */ = {isa = PBXBuildFile; fileRef = B3B3B3B300000001B3B3B3B3 /* logo_habizy.png */; };
-		A1A1A1A10000000CA1A1A1A1 /* NotificationPoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A2A2A20000000CA2A2A2A2 /* NotificationPoller.swift */; };
 		D1D1D1D100000001D1D1D1D1 /* MenageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D2D2D200000001D2D2D2D2 /* MenageViewModel.swift */; };
 		D1D1D1D100000002D1D1D1D1 /* MenageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D2D2D200000002D2D2D2D2 /* MenageView.swift */; };
 /* End PBXBuildFile section */
@@ -133,7 +132,6 @@
 		A2A2A2A20000000AA2A2A2A2 /* CountingText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountingText.swift; sourceTree = "<group>"; };
 		A2A2A2A20000000BA2A2A2A2 /* BreathingEmptyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingEmptyState.swift; sourceTree = "<group>"; };
 		B3B3B3B300000001B3B3B3B3 /* logo_habizy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_habizy.png; sourceTree = "<group>"; };
-		A2A2A2A20000000CA2A2A2A2 /* NotificationPoller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPoller.swift; sourceTree = "<group>"; };
 		D2D2D2D200000001D2D2D2D2 /* MenageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenageViewModel.swift; sourceTree = "<group>"; };
 		D2D2D2D200000002D2D2D2D2 /* MenageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -291,7 +289,6 @@
 				BC1B944B4598C1AB75376381 /* APIService.swift */,
 				31CE0211D7E82F4FCC9100FF /* Models.swift */,
 				381E2582ED22D33BB031DD4C /* TokenManager.swift */,
-				A2A2A2A20000000CA2A2A2A2 /* NotificationPoller.swift */,
 				2B3F705DE8EB89C23151807A /* Repositories */,
 			);
 			path = Data;
@@ -424,7 +421,6 @@
 				A1A1A1A100000009A1A1A1A1 /* PressableStyle.swift in Sources */,
 				A1A1A1A10000000AA1A1A1A1 /* CountingText.swift in Sources */,
 				A1A1A1A10000000BA1A1A1A1 /* BreathingEmptyState.swift in Sources */,
-				A1A1A1A10000000CA1A1A1A1 /* NotificationPoller.swift in Sources */,
 				D1D1D1D100000001D1D1D1D1 /* MenageViewModel.swift in Sources */,
 				D1D1D1D100000002D1D1D1D1 /* MenageView.swift in Sources */,
 				820455CC40CD24D32E141AAF /* TokenManager.swift in Sources */,

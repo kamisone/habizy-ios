@@ -7,9 +7,11 @@ final class NotificationsViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     private let repo: NotificationRepository
+    private let api: APIService
 
     init(tokenManager: TokenManager) {
         let api = APIService.configure(tokenManager: tokenManager)
+        self.api = api
         self.repo = NotificationRepository(api: api)
     }
 
@@ -32,14 +34,20 @@ final class NotificationsViewModel: ObservableObject {
             do {
                 try await repo.markRead(id: notification.id)
                 if let idx = notifications.firstIndex(where: { $0.id == notification.id }) {
-                    notifications[idx] = NotificationResponse(
+                    var updated = notifications
+                    updated[idx] = NotificationResponse(
                         id: notification.id,
                         type: notification.type,
+                        title: notification.title,
+                        body: notification.body,
                         message: notification.message,
                         isRead: true,
+                        readAt: ISO8601DateFormatter().string(from: Date()),
                         actor: notification.actor,
+                        data: notification.data,
                         createdAt: notification.createdAt
                     )
+                    notifications = updated
                 }
             } catch {
                 errorMessage = error.localizedDescription
@@ -49,11 +57,18 @@ final class NotificationsViewModel: ObservableObject {
 
     func markAllRead() {
         Task {
-            for notif in notifications where !notif.isRead {
-                try? await repo.markRead(id: notif.id)
-            }
-            notifications = notifications.map {
-                NotificationResponse(id: $0.id, type: $0.type, message: $0.message, isRead: true, actor: $0.actor, createdAt: $0.createdAt)
+            do {
+                try await api.markAllNotificationsRead()
+                notifications = notifications.map {
+                    NotificationResponse(
+                        id: $0.id, type: $0.type, title: $0.title, body: $0.body,
+                        message: $0.message, isRead: true,
+                        readAt: ISO8601DateFormatter().string(from: Date()),
+                        actor: $0.actor, data: $0.data, createdAt: $0.createdAt
+                    )
+                }
+            } catch {
+                errorMessage = error.localizedDescription
             }
         }
     }
