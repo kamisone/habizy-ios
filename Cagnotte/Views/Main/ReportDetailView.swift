@@ -2,7 +2,9 @@ import SwiftUI
 
 struct ReportDetailView: View {
     let reportId: String
+    let tokenManager: TokenManager
     @StateObject private var vm: ReportDetailViewModel
+    @EnvironmentObject private var tabBarVisibility: TabBarVisibility
     @Environment(\.dismiss) private var dismiss
     @State private var commentText = ""
     @State private var showEditSheet = false
@@ -10,6 +12,7 @@ struct ReportDetailView: View {
 
     init(reportId: String, tokenManager: TokenManager) {
         self.reportId = reportId
+        self.tokenManager = tokenManager
         _vm = StateObject(wrappedValue: ReportDetailViewModel(tokenManager: tokenManager))
     }
 
@@ -103,27 +106,42 @@ struct ReportDetailView: View {
                 // Comment input
                 HStack(spacing: 8) {
                     TextField("Ajouter un commentaire...", text: $commentText)
-                        .textFieldStyle(.plain).padding(10).background(Color.lightCardBg).cornerRadius(16)
+                        .textFieldStyle(.plain)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(Color.lightCardBg)
+                        .cornerRadius(16)
                     Button {
                         guard !commentText.trimmingCharacters(in: .whitespaces).isEmpty else { return }
                         vm.addComment(reportId: reportId, content: commentText.trimmingCharacters(in: .whitespaces))
                         commentText = ""
                     } label: {
                         Image(systemName: "paperplane.fill").font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(.white).padding(10).background(Color.greenPrimary).cornerRadius(12)
+                            .foregroundColor(.white)
+                            .padding(10)
+                            .background(Color.greenPrimary)
+                            .cornerRadius(12)
                     }.buttonStyle(.plain)
                 }
-                .padding(.horizontal, 16).padding(.vertical, 10).background(Color.white)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(Color.white)
             }
         }
         .background(Color.screenBackground.ignoresSafeArea())
         .navigationTitle("Signalement").navigationBarTitleDisplayMode(.inline)
-        .onAppear { vm.load(reportId: reportId) }
+        .onAppear {
+            vm.load(reportId: reportId)
+            tabBarVisibility.isVisible = false
+        }
+        .onDisappear {
+            tabBarVisibility.isVisible = true
+        }
         .toast(message: Binding(get: { vm.errorMessage }, set: { vm.errorMessage = $0 }), type: .error)
         .toast(message: Binding(get: { vm.successMessage }, set: { vm.successMessage = $0 }), type: .success)
         .sheet(isPresented: $showEditSheet) {
             if let detail = vm.detail {
-                EditReportSheet(detail: detail) { title, desc, tags in
+                EditReportSheet(detail: detail, tokenManager: tokenManager) { title, desc, tags in
                     vm.updateReport(reportId: reportId, title: title, description: desc, tags: tags)
                 }
             }
@@ -134,18 +152,20 @@ struct ReportDetailView: View {
         } message: {
             Text("Cette action est irréversible.")
         }
-        .onChange(of: vm.deleted) { if vm.deleted { dismiss() } }
+        .onChange(of: vm.deleted) { _ in if vm.deleted { dismiss() } }
     }
 }
 
 private struct EditReportSheet: View {
     @Environment(\.dismiss) private var dismiss
     let detail: ReportDetailResponse
+    let tokenManager: TokenManager
     let onSave: (String, String, [String]?) -> Void
 
     @State private var title: String = ""
     @State private var description: String = ""
     @State private var selectedTags: Set<String> = []
+    @State private var availableTags: [ReportTagResponse] = []
 
     var body: some View {
         NavigationStack {
@@ -170,13 +190,13 @@ private struct EditReportSheet: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Tags").font(.system(size: 13, weight: .medium)).foregroundColor(.subtitleText)
                         WrappingHStack(spacing: 8) {
-                            ForEach(allTags, id: \.self) { tag in
-                                let selected = selectedTags.contains(tag)
-                                let color = tagColor(tag)
+                            ForEach(availableTags) { tag in
+                                let selected = selectedTags.contains(tag.title)
+                                let color = parseTagColor(tag.color)
                                 Button {
-                                    if selected { selectedTags.remove(tag) } else { selectedTags.insert(tag) }
+                                    if selected { selectedTags.remove(tag.title) } else { selectedTags.insert(tag.title) }
                                 } label: {
-                                    Text(tag).font(.system(size: 13, weight: .semibold))
+                                    Text(tag.title).font(.system(size: 13, weight: .semibold))
                                         .foregroundColor(selected ? .white : color)
                                         .padding(.horizontal, 14).padding(.vertical, 8)
                                         .background(selected ? color : color.opacity(0.12)).cornerRadius(20)
@@ -185,6 +205,12 @@ private struct EditReportSheet: View {
                         }
                     }
                 }.padding(18)
+            }
+            .onAppear {
+                if let id = tokenManager.colocationId {
+                    let api = APIService.configure(tokenManager: tokenManager)
+                    Task { availableTags = (try? await api.getReportTags(colocationId: id)) ?? [] }
+                }
             }
             .background(Color.screenBackground.ignoresSafeArea())
             .navigationTitle("Modifier").navigationBarTitleDisplayMode(.inline)

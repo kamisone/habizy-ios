@@ -1,26 +1,7 @@
 import SwiftUI
 
-let allTags = [
-    "Urgent", "Important", "Information", "Rappel", "Suggestion",
-    "Besoin d'aide", "A faire", "A verifier", "Aujourd'hui",
-    "Des que possible", "Resolu",
-]
-
-func tagColor(_ tag: String) -> Color {
-    switch tag {
-    case "Urgent": return Color(hex: "#FF6B5E")
-    case "Important": return Color(hex: "#FFB020")
-    case "Information": return Color(hex: "#3B82F6")
-    case "Rappel": return Color(hex: "#7C6BFF")
-    case "Suggestion": return Color(hex: "#17A877")
-    case "Besoin d'aide": return Color(hex: "#EC4899")
-    case "A faire": return Color(hex: "#FF6B5E")
-    case "A verifier": return Color(hex: "#FFB020")
-    case "Aujourd'hui": return Color(hex: "#FF6B5E")
-    case "Des que possible": return Color(hex: "#FFB020")
-    case "Resolu": return Color(hex: "#8A8275")
-    default: return Color(hex: "#8A8275")
-    }
+func parseTagColor(_ hex: String) -> Color {
+    Color(hex: hex.hasPrefix("#") ? hex : "#\(hex)")
 }
 
 struct ReportsView: View {
@@ -28,6 +9,7 @@ struct ReportsView: View {
     @StateObject private var vm: ReportsViewModel
     @State private var showCreateReport = false
     @State private var selectedReportId: String?
+    @State private var showAddTagDialog = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: ReportsViewModel(tokenManager: tokenManager))
@@ -58,13 +40,15 @@ struct ReportsView: View {
                         }.buttonStyle(.plain).padding(.horizontal, 18)
 
                         // Tag filters
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 8) {
-                                TagFilterChipView(label: "Tous", selected: vm.tagFilter == nil) { vm.setTagFilter(nil) }
-                                ForEach(allTags, id: \.self) { tag in
-                                    TagFilterChipView(label: tag, selected: vm.tagFilter == tag) { vm.setTagFilter(tag) }
-                                }
-                            }.padding(.horizontal, 18)
+                        if !vm.tags.isEmpty {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 8) {
+                                    TagFilterChipView(label: "Tous", color: .greenPrimary, selected: vm.tagFilter == nil) { vm.setTagFilter(nil) }
+                                    ForEach(vm.tags) { tag in
+                                        TagFilterChipView(label: tag.title, color: parseTagColor(tag.color), selected: vm.tagFilter == tag.title) { vm.setTagFilter(tag.title) }
+                                    }
+                                }.padding(.horizontal, 18)
+                            }
                         }
 
                         // Reports list
@@ -74,8 +58,53 @@ struct ReportsView: View {
                         } else {
                             VStack(spacing: 0) {
                                 ForEach(vm.reports) { report in
-                                    Button { selectedReportId = report.id } label: { ReportCardView(report: report) }.buttonStyle(PressableButtonStyle())
+                                    Button { selectedReportId = report.id } label: {
+                                        ReportCardView(report: report, allTags: vm.tags)
+                                    }.buttonStyle(PressableButtonStyle())
                                     if report.id != vm.reports.last?.id { Divider().padding(.leading, 80) }
+                                }
+                            }
+                            .background(Color.white).cornerRadius(22)
+                            .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
+                            .padding(.horizontal, 18)
+                        }
+
+                        // Admin tag management
+                        if vm.isAdmin {
+                            VStack(spacing: 0) {
+                                HStack {
+                                    Text("Gerer les tags")
+                                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.darkText)
+                                    Spacer()
+                                    Button { showAddTagDialog = true } label: {
+                                        Image(systemName: "plus")
+                                            .font(.system(size: 16, weight: .semibold))
+                                            .foregroundColor(.greenPrimary)
+                                    }
+                                }
+                                .padding(.horizontal, 16).padding(.vertical, 12)
+
+                                ForEach(vm.tags) { tag in
+                                    HStack(spacing: 10) {
+                                        RoundedRectangle(cornerRadius: 4)
+                                            .fill(parseTagColor(tag.color))
+                                            .frame(width: 14, height: 14)
+                                        Text(tag.title)
+                                            .font(.system(size: 14, weight: .medium))
+                                            .foregroundColor(.bodyText)
+                                        Spacer()
+                                        Button { vm.deleteTag(id: tag.id) } label: {
+                                            Image(systemName: "trash")
+                                                .font(.system(size: 14))
+                                                .foregroundColor(.coralRed)
+                                        }.buttonStyle(.plain)
+                                    }
+                                    .padding(.horizontal, 16).padding(.vertical, 8)
+
+                                    if tag.id != vm.tags.last?.id {
+                                        Divider().padding(.leading, 40)
+                                    }
                                 }
                             }
                             .background(Color.white).cornerRadius(22)
@@ -94,11 +123,16 @@ struct ReportsView: View {
             .sheet(isPresented: $showCreateReport) {
                 CreateReportView(tokenManager: tokenManager) { vm.load() }
             }
-            .navigationDestination(item: Binding(
-                get: { selectedReportId.map { ReportNavItem(id: $0) } },
-                set: { selectedReportId = $0?.id }
-            )) { item in
-                ReportDetailView(reportId: item.id, tokenManager: tokenManager)
+            .navigationDestination(isPresented: Binding(get: { selectedReportId != nil }, set: { if !$0 { selectedReportId = nil } })) {
+                if let id = selectedReportId {
+                    ReportDetailView(reportId: id, tokenManager: tokenManager)
+                }
+            }
+            .sheet(isPresented: $showAddTagDialog) {
+                AddTagSheet { title, color in
+                    vm.createTag(title: title, color: color)
+                    showAddTagDialog = false
+                }
             }
         }
     }
@@ -107,19 +141,32 @@ struct ReportsView: View {
 struct ReportNavItem: Hashable { let id: String }
 
 private struct TagFilterChipView: View {
-    let label: String; let selected: Bool; let action: () -> Void
+    let label: String
+    var color: Color = .greenPrimary
+    let selected: Bool
+    let action: () -> Void
+
     var body: some View {
         Button(action: action) {
             Text(label).font(.system(size: 12, weight: .semibold))
-                .foregroundColor(selected ? .white : .subtitleText)
+                .foregroundColor(selected ? .white : color)
                 .padding(.horizontal, 14).padding(.vertical, 7)
-                .background(selected ? Color.greenPrimary : Color.lightCardBg).cornerRadius(20)
+                .background(selected ? color : color.opacity(0.12)).cornerRadius(20)
         }.buttonStyle(.plain)
     }
 }
 
 private struct ReportCardView: View {
     let report: ReportResponse
+    var allTags: [ReportTagResponse] = []
+
+    private func colorForTag(_ tagTitle: String) -> Color {
+        if let tag = allTags.first(where: { $0.title == tagTitle }) {
+            return parseTagColor(tag.color)
+        }
+        return Color(hex: "#8A8275")
+    }
+
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             if let firstPhoto = report.photoUrls?.first, let url = URL(string: firstPhoto) {
@@ -136,9 +183,10 @@ private struct ReportCardView: View {
                 if let tags = report.tags, !tags.isEmpty {
                     HStack(spacing: 4) {
                         ForEach(tags.prefix(3), id: \.self) { tag in
-                            Text(tag).font(.system(size: 10, weight: .semibold)).foregroundColor(tagColor(tag))
+                            let c = colorForTag(tag)
+                            Text(tag).font(.system(size: 10, weight: .semibold)).foregroundColor(c)
                                 .padding(.horizontal, 6).padding(.vertical, 2)
-                                .background(tagColor(tag).opacity(0.12)).cornerRadius(6)
+                                .background(c.opacity(0.12)).cornerRadius(6)
                         }
                     }
                 }
@@ -148,6 +196,8 @@ private struct ReportCardView: View {
                 }
                 HStack(spacing: 8) {
                     Text(report.user.name).font(.system(size: 11)).foregroundColor(.lightText)
+                    Text("·").font(.system(size: 11)).foregroundColor(.lightText)
+                    Text(formatTimeAgo(report.createdAt)).font(.system(size: 11)).foregroundColor(.lightText)
                     if let count = report.commentCount, count > 0 {
                         HStack(spacing: 3) {
                             Image(systemName: "bubble.left").font(.system(size: 10))
@@ -158,5 +208,72 @@ private struct ReportCardView: View {
             }
             Spacer()
         }.padding(.horizontal, 16).padding(.vertical, 12)
+    }
+}
+
+// MARK: - Add Tag Sheet
+
+private let presetColors = ["#FF6B5E", "#FFB020", "#3B82F6", "#7C6BFF", "#17A877", "#EC4899", "#14B8A6", "#F97316"]
+
+private struct AddTagSheet: View {
+    let onConfirm: (String, String) -> Void
+    @Environment(\.dismiss) private var dismiss
+    @State private var name = ""
+    @State private var selectedColor = presetColors[0]
+
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 16) {
+                TextField("Nom du tag", text: $name)
+                    .padding(14)
+                    .background(Color.white)
+                    .cornerRadius(14)
+                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.borderColor, lineWidth: 1))
+                    .font(.system(size: 15))
+
+                Text("Couleur")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.bodyText)
+
+                HStack(spacing: 10) {
+                    ForEach(presetColors, id: \.self) { hex in
+                        let c = Color(hex: hex)
+                        Circle()
+                            .fill(c)
+                            .frame(width: 32, height: 32)
+                            .overlay(
+                                Circle().stroke(Color.white, lineWidth: selectedColor == hex ? 3 : 0)
+                                    .padding(2)
+                            )
+                            .overlay(
+                                Circle().stroke(c, lineWidth: selectedColor == hex ? 2 : 0)
+                            )
+                            .onTapGesture { selectedColor = hex }
+                    }
+                }
+
+                Spacer()
+            }
+            .padding(20)
+            .background(Color.screenBackground.ignoresSafeArea())
+            .navigationTitle("Nouveau tag")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Annuler") { dismiss() }
+                        .foregroundColor(.subtitleText)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Ajouter") {
+                        if !name.trimmingCharacters(in: .whitespaces).isEmpty {
+                            onConfirm(name.trimmingCharacters(in: .whitespaces), selectedColor)
+                        }
+                    }
+                    .foregroundColor(.greenPrimary)
+                    .fontWeight(.semibold)
+                }
+            }
+        }
+        .presentationDetents([.medium])
     }
 }

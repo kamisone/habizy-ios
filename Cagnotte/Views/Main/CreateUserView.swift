@@ -76,7 +76,7 @@ struct CreateUserView: View {
         .background(Color.screenBackground.ignoresSafeArea())
         .navigationTitle("Nouveau colocataire")
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: vm.createdUser) { _, result in
+        .onChange(of: vm.createdUser) { result in
             if result != nil { showResult = true }
         }
         .sheet(isPresented: $showResult) {

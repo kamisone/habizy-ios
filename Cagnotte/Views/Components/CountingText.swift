@@ -21,7 +21,7 @@ struct CountingText: View {
                     displayValue = targetValue
                 }
             }
-            .onChange(of: targetValue) { _, newValue in
+            .onChange(of: targetValue) { newValue in
                 withAnimation(.easeOut(duration: duration)) {
                     displayValue = newValue
                 }

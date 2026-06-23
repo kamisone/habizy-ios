@@ -127,9 +127,9 @@ private struct ZoomableImageView: View {
     }
 
     private func magnificationGesture(in size: CGSize) -> some Gesture {
-        MagnifyGesture()
+        MagnificationGesture()
             .onChanged { value in
-                let newScale = (lastScale * value.magnification).clamped(to: 1...5)
+                let newScale = (lastScale * value).clamped(to: 1...5)
                 scale = newScale
             }
             .onEnded { _ in

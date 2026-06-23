@@ -13,21 +13,32 @@ struct LoginView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                // Green gradient header
-                ZStack {
-                    LinearGradient.greenVertical
-                        .ignoresSafeArea(edges: .top)
+                // Logo + app name
+                VStack(spacing: 10) {
+                    if let uiImage = UIImage(named: "logo_habizy") {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 88, height: 88)
+                            .clipShape(RoundedRectangle(cornerRadius: 22))
+                    }
                     Text("Habizy")
-                        .font(.system(size: 30, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
-                    .padding(.vertical, 16)
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [
+                                    Color(hex: "#17C97E"),
+                                    Color(hex: "#00B4D8"),
+                                    Color(hex: "#6C63FF"),
+                                    Color(hex: "#E040A0"),
+                                ],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 0))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 36)
-                        .fill(Color.screenBackground)
-                        .offset(y: 90)
-                )
+                .padding(.top, 32)
+                .padding(.bottom, 16)
 
                 VStack(spacing: 16) {
                     // Login section
@@ -106,10 +117,10 @@ struct LoginView: View {
             }
         }
         .background(Color.screenBackground.ignoresSafeArea())
-        .onChange(of: authViewModel.loginError) { _, err in
+        .onChange(of: authViewModel.loginError) { err in
             loginError = err
         }
-        .onChange(of: authViewModel.joinError) { _, err in
+        .onChange(of: authViewModel.joinError) { err in
             joinError = err
         }
     }
@@ -121,13 +132,28 @@ struct AppTextField: View {
     let placeholder: String
     @Binding var text: String
     var isSecure: Bool = false
+    @State private var showPassword = false
 
     var body: some View {
-        Group {
+        HStack {
+            Group {
+                if isSecure && !showPassword {
+                    SecureField(placeholder, text: $text)
+                } else {
+                    TextField(placeholder, text: $text)
+                }
+            }
+            .font(.system(size: 15))
+
             if isSecure {
-                SecureField(placeholder, text: $text)
-            } else {
-                TextField(placeholder, text: $text)
+                Button {
+                    showPassword.toggle()
+                } label: {
+                    Image(systemName: showPassword ? "eye.slash" : "eye")
+                        .foregroundColor(.subtitleText)
+                        .font(.system(size: 15))
+                }
+                .buttonStyle(.plain)
             }
         }
         .padding(14)
@@ -137,7 +163,6 @@ struct AppTextField: View {
             RoundedRectangle(cornerRadius: 14)
                 .stroke(Color.borderColor, lineWidth: 1)
         )
-        .font(.system(size: 15))
     }
 }
 

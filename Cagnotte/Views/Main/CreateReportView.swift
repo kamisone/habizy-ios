@@ -14,6 +14,7 @@ struct CreateReportView: View {
     @State private var showCamera = false
     @State private var isLoading = false
     @State private var errorMessage: String?
+    @State private var availableTags: [ReportTagResponse] = []
 
     init(tokenManager: TokenManager, onCreated: @escaping () -> Void) {
         self.tokenManager = tokenManager
@@ -59,15 +60,21 @@ struct CreateReportView: View {
                     // Tags
                     Text("Tags (optionnel)").font(.system(size: 16, weight: .semibold, design: .rounded)).foregroundColor(.darkText)
                     WrappingHStack(spacing: 8) {
-                        ForEach(allTags, id: \.self) { tag in
-                            let selected = selectedTags.contains(tag)
-                            let color = tagColor(tag)
-                            Button { if selected { selectedTags.remove(tag) } else { selectedTags.insert(tag) } } label: {
-                                Text(tag).font(.system(size: 13, weight: .semibold))
+                        ForEach(availableTags) { tag in
+                            let selected = selectedTags.contains(tag.title)
+                            let color = parseTagColor(tag.color)
+                            Button { if selected { selectedTags.remove(tag.title) } else { selectedTags.insert(tag.title) } } label: {
+                                Text(tag.title).font(.system(size: 13, weight: .semibold))
                                     .foregroundColor(selected ? .white : color)
                                     .padding(.horizontal, 14).padding(.vertical, 8)
                                     .background(selected ? color : color.opacity(0.12)).cornerRadius(20)
                             }.buttonStyle(.plain)
+                        }
+                    }
+                    .onAppear {
+                        if let id = tokenManager.colocationId {
+                            let api = APIService.configure(tokenManager: tokenManager)
+                            Task { availableTags = (try? await api.getReportTags(colocationId: id)) ?? [] }
                         }
                     }
 

@@ -29,6 +29,14 @@
 	<string>Photographier vos tickets de caisse pour les ajouter facilement.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Sélectionner une photo de ticket depuis votre galerie.</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.example.cagnotte.notificationPoll</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
 </dict>

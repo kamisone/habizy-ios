@@ -65,6 +65,10 @@
 		A1A1A1A100000009A1A1A1A1 /* PressableStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A2A2A200000009A2A2A2A2 /* PressableStyle.swift */; };
 		A1A1A1A10000000AA1A1A1A1 /* CountingText.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A2A2A20000000AA2A2A2A2 /* CountingText.swift */; };
 		A1A1A1A10000000BA1A1A1A1 /* BreathingEmptyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A2A2A20000000BA2A2A2A2 /* BreathingEmptyState.swift */; };
+		B4B4B4B400000001B4B4B4B4 /* logo_habizy.png in Resources */ = {isa = PBXBuildFile; fileRef = B3B3B3B300000001B3B3B3B3 /* logo_habizy.png */; };
+		A1A1A1A10000000CA1A1A1A1 /* NotificationPoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A2A2A20000000CA2A2A2A2 /* NotificationPoller.swift */; };
+		D1D1D1D100000001D1D1D1D1 /* MenageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D2D2D200000001D2D2D2D2 /* MenageViewModel.swift */; };
+		D1D1D1D100000002D1D1D1D1 /* MenageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D2D2D200000002D2D2D2D2 /* MenageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -128,6 +132,10 @@
 		A2A2A2A200000009A2A2A2A2 /* PressableStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressableStyle.swift; sourceTree = "<group>"; };
 		A2A2A2A20000000AA2A2A2A2 /* CountingText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountingText.swift; sourceTree = "<group>"; };
 		A2A2A2A20000000BA2A2A2A2 /* BreathingEmptyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingEmptyState.swift; sourceTree = "<group>"; };
+		B3B3B3B300000001B3B3B3B3 /* logo_habizy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_habizy.png; sourceTree = "<group>"; };
+		A2A2A2A20000000CA2A2A2A2 /* NotificationPoller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPoller.swift; sourceTree = "<group>"; };
+		D2D2D2D200000001D2D2D2D2 /* MenageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenageViewModel.swift; sourceTree = "<group>"; };
+		D2D2D2D200000002D2D2D2D2 /* MenageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -222,6 +230,7 @@
 				A2A2A2A200000003A2A2A2A2 /* ReportDetailView.swift */,
 				A2A2A2A200000006A2A2A2A2 /* CreateReportView.swift */,
 				A2A2A2A200000007A2A2A2A2 /* StatsView.swift */,
+				D2D2D2D200000002D2D2D2D2 /* MenageView.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -257,6 +266,7 @@
 				7BD80F3117C0EA7DA6BAE2BB /* ShoppingViewModel.swift */,
 				A2A2A2A200000002A2A2A2A2 /* ReportsViewModel.swift */,
 				A2A2A2A200000004A2A2A2A2 /* ReportDetailViewModel.swift */,
+				D2D2D2D200000001D2D2D2D2 /* MenageViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -264,6 +274,7 @@
 		C28EB696202AA7C0978B5B67 /* Cagnotte */ = {
 			isa = PBXGroup;
 			children = (
+				B3B3B3B300000001B3B3B3B3 /* logo_habizy.png */,
 				AF7E81887E39B71F777096A8 /* Info.plist */,
 				7B0F93C6E80BBD97C9EB4D0D /* App */,
 				F8ED6C7305E4DCCEE168491A /* Data */,
@@ -280,6 +291,7 @@
 				BC1B944B4598C1AB75376381 /* APIService.swift */,
 				31CE0211D7E82F4FCC9100FF /* Models.swift */,
 				381E2582ED22D33BB031DD4C /* TokenManager.swift */,
+				A2A2A2A20000000CA2A2A2A2 /* NotificationPoller.swift */,
 				2B3F705DE8EB89C23151807A /* Repositories */,
 			);
 			path = Data;
@@ -293,6 +305,7 @@
 			buildConfigurationList = C371E527A24121A5C4C098B3 /* Build configuration list for PBXNativeTarget "Cagnotte" */;
 			buildPhases = (
 				B6884559629C509152D308B4 /* Sources */,
+				C5C5C5C500000001C5C5C5C5 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -337,6 +350,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C5C5C5C500000001C5C5C5C5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4B4B4B400000001B4B4B4B4 /* logo_habizy.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B6884559629C509152D308B4 /* Sources */ = {
@@ -400,6 +424,9 @@
 				A1A1A1A100000009A1A1A1A1 /* PressableStyle.swift in Sources */,
 				A1A1A1A10000000AA1A1A1A1 /* CountingText.swift in Sources */,
 				A1A1A1A10000000BA1A1A1A1 /* BreathingEmptyState.swift in Sources */,
+				A1A1A1A10000000CA1A1A1A1 /* NotificationPoller.swift in Sources */,
+				D1D1D1D100000001D1D1D1D1 /* MenageViewModel.swift in Sources */,
+				D1D1D1D100000002D1D1D1D1 /* MenageView.swift in Sources */,
 				820455CC40CD24D32E141AAF /* TokenManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -414,7 +441,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Cagnotte/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -471,7 +498,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -489,7 +516,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Cagnotte/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -552,7 +579,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;

@@ -349,3 +349,27 @@ struct CreateTagRequest: Encodable {
     let color: String
     let colocationId: String
 }
+
+// MARK: - Ménage
+
+struct MenageBoardMember: Decodable {
+    let userId: String
+    let name: String
+    let initial: String?
+    let colorHex: String?
+    let done: Bool
+    let doneAt: String?
+    let comment: String?
+}
+
+struct MarkMenageDoneRequest: Encodable {
+    let comment: String?
+}
+
+struct MenageWeekResponse: Decodable {
+    let weekStart: String
+    let board: [MenageBoardMember]
+    let totalMembers: Int
+    let totalDone: Int
+    let todayTakenBy: String?
+}

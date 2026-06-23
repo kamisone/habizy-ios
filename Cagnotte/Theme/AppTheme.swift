@@ -125,3 +125,16 @@ func formatTimeAgo(_ isoDate: String?) -> String {
         return fmt.string(from: parsed)
     }
 }
+
+// MARK: - Tag Color Fallback
+func tagColor(_ tag: String) -> Color {
+    switch tag {
+    case "Urgent": return Color(hex: "#FF6B5E")
+    case "Important": return Color(hex: "#FFB020")
+    case "Information": return Color(hex: "#3B82F6")
+    case "Rappel": return Color(hex: "#7C6BFF")
+    case "Suggestion": return Color(hex: "#17A877")
+    case "Besoin d'aide": return Color(hex: "#EC4899")
+    default: return Color(hex: "#8A8275")
+    }
+}

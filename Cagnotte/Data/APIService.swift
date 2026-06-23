@@ -331,6 +331,10 @@ final class APIService {
         try await request("notifications")
     }
 
+    func getNotificationsSince(lastId: String) async throws -> [NotificationResponse] {
+        try await request("notifications/since/\(lastId)")
+    }
+
     func markNotificationRead(id: String) async throws {
         try await requestVoid("notifications/\(id)/read", method: "PATCH")
     }
@@ -373,6 +377,20 @@ final class APIService {
 
     func deleteReportTag(id: String) async throws {
         try await requestVoid("reports/tags/\(id)", method: "DELETE")
+    }
+
+    // MARK: - Ménage Endpoints
+
+    func getMenageWeek(colocationId: String) async throws -> MenageWeekResponse {
+        try await request("menage/\(colocationId)")
+    }
+
+    func markMenageDone(colocationId: String, comment: String? = nil) async throws {
+        try await requestVoid("menage/\(colocationId)/done", method: "POST", body: MarkMenageDoneRequest(comment: comment))
+    }
+
+    func undoMenageDone(colocationId: String) async throws {
+        try await requestVoid("menage/\(colocationId)/done", method: "DELETE")
     }
 }
 

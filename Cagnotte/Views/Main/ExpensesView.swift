@@ -487,9 +487,9 @@ struct FullScreenPhotoViewer: View {
                         .scaleEffect(scale)
                         .offset(offset)
                         .gesture(
-                            MagnifyGesture()
+                            MagnificationGesture()
                                 .onChanged { value in
-                                    scale = max(1, lastScale * value.magnification)
+                                    scale = max(1, lastScale * value)
                                 }
                                 .onEnded { value in
                                     lastScale = scale

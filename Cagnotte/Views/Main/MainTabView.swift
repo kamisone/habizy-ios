@@ -1,9 +1,14 @@
 import SwiftUI
 
+class TabBarVisibility: ObservableObject {
+    @Published var isVisible = true
+}
+
 struct MainTabView: View {
     @EnvironmentObject var tokenManager: TokenManager
     @State private var selectedTab = 0
     @State private var showAddReceipt = false
+    @StateObject private var tabBarVisibility = TabBarVisibility()
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -25,11 +30,13 @@ struct MainTabView: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
             .background(Color.screenBackground)
 
-            // Custom bottom bar
-            CustomTabBar(selectedTab: $selectedTab, onAddTapped: {
-                showAddReceipt = true
-            })
+            if tabBarVisibility.isVisible {
+                CustomTabBar(selectedTab: $selectedTab, onAddTapped: {
+                    showAddReceipt = true
+                })
+            }
         }
+        .environmentObject(tabBarVisibility)
         .ignoresSafeArea(.keyboard)
         .sheet(isPresented: $showAddReceipt) {
             AddReceiptView(tokenManager: tokenManager)

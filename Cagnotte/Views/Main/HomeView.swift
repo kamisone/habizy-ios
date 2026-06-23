@@ -8,6 +8,7 @@ struct HomeView: View {
     @State private var showShopping = false
     @State private var showStats = false
     @State private var showHistory = false
+    @State private var showMenage = false
     @State private var selectedReportId: ReportNavItem? = nil
 
     init(tokenManager: TokenManager) {
@@ -47,8 +48,13 @@ struct HomeView: View {
             .navigationDestination(isPresented: $showShopping) {
                 ShoppingListView(tokenManager: tokenManager)
             }
-            .navigationDestination(item: $selectedReportId) { item in
-                ReportDetailView(reportId: item.id, tokenManager: tokenManager)
+            .navigationDestination(isPresented: $showMenage) {
+                MenageView(tokenManager: tokenManager)
+            }
+            .navigationDestination(isPresented: Binding(get: { selectedReportId != nil }, set: { if !$0 { selectedReportId = nil } })) {
+                if let item = selectedReportId {
+                    ReportDetailView(reportId: item.id, tokenManager: tokenManager)
+                }
             }
         }
     }
@@ -209,6 +215,15 @@ struct HomeView: View {
                         bgColor: Color.appBlue.opacity(0.10),
                         iconColor: .appBlue
                     ) { showHistory = true }
+                }
+                HStack(spacing: 12) {
+                    QuickActionCard(
+                        icon: "house",
+                        label: "Ménage",
+                        bgColor: Color.orange.opacity(0.12),
+                        iconColor: .orange
+                    ) { showMenage = true }
+                    Spacer()
                 }
 
                 // Recent reports
