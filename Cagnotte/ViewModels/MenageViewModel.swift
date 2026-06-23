@@ -6,6 +6,7 @@ final class MenageViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var currentUserId: String?
+    @Published var isAdmin = false
 
     private let api: APIService
     private let tokenManager: TokenManager
@@ -49,12 +50,26 @@ final class MenageViewModel: ObservableObject {
         }
     }
 
+    func updateTaskDescription(_ description: String) {
+        guard let id = colocationId else { return }
+        Task {
+            do {
+                try await api.updateMenageTaskDescription(colocationId: id, description: description)
+                await fetchData(showLoading: false)
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+
     private func fetchData(showLoading: Bool) async {
         guard let id = colocationId else { return }
         if showLoading { isLoading = true }
         defer { isLoading = false }
         do {
-            currentUserId = (try? await api.getMe())?.id
+            let me = try? await api.getMe()
+            currentUserId = me?.id
+            isAdmin = me?.isAdmin ?? false
             weekData = try await api.getMenageWeek(colocationId: id)
         } catch {
             if showLoading { errorMessage = error.localizedDescription }

@@ -392,6 +392,10 @@ final class APIService {
     func undoMenageDone(colocationId: String) async throws {
         try await requestVoid("menage/\(colocationId)/done", method: "DELETE")
     }
+
+    func updateMenageTaskDescription(colocationId: String, description: String) async throws {
+        try await requestVoid("menage/\(colocationId)/task-description", method: "PATCH", body: UpdateTaskDescriptionRequest(description: description))
+    }
 }
 
 // Sentinel type for void responses

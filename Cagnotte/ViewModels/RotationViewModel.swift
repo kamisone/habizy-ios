@@ -111,4 +111,9 @@ final class RotationViewModel: ObservableObject {
     var myEntry: RotationEntryResponse? {
         entries.first { $0.user.id == currentUserId }
     }
+
+    var isMyTurn: Bool {
+        guard let current = entries.first(where: { $0.status == "current" }) else { return true }
+        return current.user.id == currentUserId
+    }
 }

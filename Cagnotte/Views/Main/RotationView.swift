@@ -2,8 +2,11 @@ import SwiftUI
 
 struct RotationView: View {
     @StateObject private var vm: RotationViewModel
+    @State private var showAddReceipt = false
+    private let tokenManager: TokenManager
 
     init(tokenManager: TokenManager) {
+        self.tokenManager = tokenManager
         _vm = StateObject(wrappedValue: RotationViewModel(tokenManager: tokenManager))
     }
 
@@ -38,6 +41,9 @@ struct RotationView: View {
             get: { vm.successMessage },
             set: { vm.successMessage = $0 }
         ), type: .success)
+        .sheet(isPresented: $showAddReceipt) {
+            AddReceiptView(tokenManager: tokenManager)
+        }
     }
 
     private var emptyState: some View {
@@ -102,6 +108,42 @@ struct RotationView: View {
             Text("Le tour avance apres l'ajout d'un ticket")
                 .font(.system(size: 12, weight: .medium))
                 .foregroundColor(.white.opacity(0.7))
+
+            if vm.isMyTurn {
+                Button {
+                    showAddReceipt = true
+                } label: {
+                    HStack(spacing: 12) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(Color.white.opacity(0.2))
+                                .frame(width: 40, height: 40)
+                            Image(systemName: "doc.text")
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(.white)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Ajouter un ticket de caisse")
+                                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                .foregroundColor(.white)
+                            Text("Photographier ou saisir manuellement")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.white.opacity(0.75))
+                        }
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+                    .background(Color.white.opacity(0.18))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(Color.white.opacity(0.25), lineWidth: 1)
+                    )
+                    .cornerRadius(16)
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 4)
+            }
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)

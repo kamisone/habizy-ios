@@ -372,4 +372,9 @@ struct MenageWeekResponse: Decodable {
     let totalMembers: Int
     let totalDone: Int
     let todayTakenBy: String?
+    let taskDescription: String?
+}
+
+struct UpdateTaskDescriptionRequest: Encodable {
+    let description: String
 }
