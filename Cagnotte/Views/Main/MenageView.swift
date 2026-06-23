@@ -385,63 +385,92 @@ private struct WeekCalendarView: View {
                 .font(.system(size: 16, weight: .semibold, design: .rounded))
                 .foregroundColor(.darkText).padding(.horizontal, 4)
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(0..<7, id: \.self) { dayIndex in
-                        let today = isToday(data.weekStart, dayIndex: dayIndex)
-                        let m = membersByDay[dayIndex] ?? nil
-                        let dateNum = dayIndex < dates.count ? dates[dayIndex] : ""
-                        let hasDone = m != nil
-
-                        VStack(spacing: 4) {
-                            Text(dayLabels[dayIndex])
-                                .font(.system(size: 11, weight: .semibold))
-                                .foregroundColor(today ? .greenPrimary : .subtitleText)
-                            Text(dateNum)
-                                .font(.system(size: 16, weight: .bold, design: .rounded))
-                                .foregroundColor(today ? .greenPrimary : .darkText)
-                            Spacer().frame(height: 4)
-                            if let m = m {
-                                ZStack {
-                                    Circle().fill(Color(hex: m.colorHex ?? "#17A877")).frame(width: 30, height: 30)
-                                    Text(m.initial ?? "?").font(.system(size: 12, weight: .bold)).foregroundColor(.white)
-                                }
-                                Text(m.name.components(separatedBy: " ").first ?? "")
-                                    .font(.system(size: 9)).foregroundColor(.darkText).lineLimit(1)
-                                if let comment = m.comment, !comment.isEmpty {
-                                    Text(comment)
-                                        .font(.system(size: 8)).foregroundColor(.subtitleText)
-                                        .lineLimit(2).multilineTextAlignment(.center)
-                                        .padding(.top, 2)
-                                }
-                            } else {
-                                Spacer().frame(height: 44)
-                            }
-                        }
-                        .frame(width: 72)
-                        .padding(.vertical, 10).padding(.horizontal, 6)
-                        .background(
-                            today ? Color.greenPrimary.opacity(0.06)
-                            : hasDone ? Color.greenPrimary.opacity(0.03)
-                            : Color.clear
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 18)
-                                .stroke(
-                                    today ? Color.greenPrimary
-                                    : hasDone ? Color.greenPrimary.opacity(0.3)
-                                    : Color.dividerColor,
-                                    lineWidth: today ? 2 : 1
-                                )
-                        )
-                        .cornerRadius(18)
-                    }
+            // Row 1: Mon–Thu
+            HStack(alignment: .top, spacing: 8) {
+                ForEach(0..<4, id: \.self) { dayIndex in
+                    DayCellView(
+                        dayLabel: dayLabels[dayIndex],
+                        dateNum: dayIndex < dates.count ? dates[dayIndex] : "",
+                        isToday: isToday(data.weekStart, dayIndex: dayIndex),
+                        member: membersByDay[dayIndex] ?? nil
+                    )
+                    .frame(maxHeight: .infinity)
                 }
             }
+            .fixedSize(horizontal: false, vertical: true)
+
+            // Row 2: Fri–Sun + spacer
+            HStack(alignment: .top, spacing: 8) {
+                ForEach(4..<7, id: \.self) { dayIndex in
+                    DayCellView(
+                        dayLabel: dayLabels[dayIndex],
+                        dateNum: dayIndex < dates.count ? dates[dayIndex] : "",
+                        isToday: isToday(data.weekStart, dayIndex: dayIndex),
+                        member: membersByDay[dayIndex] ?? nil
+                    )
+                    .frame(maxHeight: .infinity)
+                }
+                Color.clear.frame(maxWidth: .infinity, maxHeight: 0)
+            }
+            .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(14)
+        .padding(16)
         .background(Color.white).cornerRadius(22)
         .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
+    }
+}
+
+private struct DayCellView: View {
+    let dayLabel: String
+    let dateNum: String
+    let isToday: Bool
+    let member: MenageBoardMember?
+
+    private var hasDone: Bool { member != nil }
+
+    var body: some View {
+        VStack(spacing: 4) {
+            Text(dayLabel)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundColor(isToday ? .greenPrimary : .subtitleText)
+            Text(dateNum)
+                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .foregroundColor(isToday ? .greenPrimary : .darkText)
+            Spacer().frame(height: 4)
+            if let m = member {
+                ZStack {
+                    Circle().fill(Color(hex: m.colorHex ?? "#17A877")).frame(width: 28, height: 28)
+                    Text(m.initial ?? "?").font(.system(size: 11, weight: .bold)).foregroundColor(.white)
+                }
+                Text(m.name.components(separatedBy: " ").first ?? "")
+                    .font(.system(size: 9, weight: .medium)).foregroundColor(.darkText).lineLimit(1)
+                if let comment = m.comment, !comment.isEmpty {
+                    Text(comment)
+                        .font(.system(size: 8)).foregroundColor(.subtitleText)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, 1)
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.vertical, 10).padding(.horizontal, 6)
+        .background(
+            isToday ? Color.greenPrimary.opacity(0.07)
+            : hasDone ? Color.greenPrimary.opacity(0.03)
+            : Color.white
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(
+                    isToday ? Color.greenPrimary
+                    : hasDone ? Color.greenPrimary.opacity(0.35)
+                    : Color.dividerColor,
+                    lineWidth: isToday ? 2 : hasDone ? 1.5 : 1
+                )
+        )
+        .cornerRadius(18)
     }
 }
 
