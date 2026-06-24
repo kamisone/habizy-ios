@@ -3,6 +3,7 @@ import SwiftUI
 struct AdminSettingsView: View {
     @StateObject private var vm: AdminSettingsViewModel
     @State private var showCopied = false
+    @State private var hasAppeared = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: AdminSettingsViewModel(tokenManager: tokenManager))
@@ -33,7 +34,9 @@ struct AdminSettingsView: View {
         .background(Color.screenBackground.ignoresSafeArea())
         .navigationTitle("Paramètres Admin")
         .navigationBarTitleDisplayMode(.large)
-        .onAppear { vm.load() }
+        .onAppear {
+            if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+        }
         .toast(message: Binding(
             get: { vm.errorMessage },
             set: { vm.errorMessage = $0 }

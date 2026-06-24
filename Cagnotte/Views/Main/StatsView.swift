@@ -2,6 +2,7 @@ import SwiftUI
 
 struct StatsView: View {
     @StateObject private var vm: StatsViewModel
+    @State private var hasAppeared = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: StatsViewModel(tokenManager: tokenManager))
@@ -31,7 +32,9 @@ struct StatsView: View {
         .background(Color.screenBackground.ignoresSafeArea())
         .navigationTitle("Statistiques")
         .navigationBarTitleDisplayMode(.large)
-        .onAppear { vm.load() }
+        .onAppear {
+            if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+        }
     }
 
     private func totalCard(_ stats: ExpenseStatsResponse) -> some View {
@@ -180,5 +183,10 @@ final class StatsViewModel: ObservableObject {
                 errorMessage = error.localizedDescription
             }
         }
+    }
+
+    func refresh() async {
+        guard let id = tokenManager.colocationId, !isLoading else { return }
+        if let updated = try? await receiptRepo.getStats(colocationId: id) { stats = updated }
     }
 }

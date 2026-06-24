@@ -5,6 +5,7 @@ struct DecideForMeView: View {
     @State private var decidedItem: ShoppingItemResponse?
     @State private var isSpinning = false
     @State private var showResult = false
+    @State private var hasAppeared = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: ShoppingViewModel(tokenManager: tokenManager))
@@ -123,6 +124,8 @@ struct DecideForMeView: View {
         .background(Color.screenBackground.ignoresSafeArea())
         .navigationTitle("Décide pour moi")
         .navigationBarTitleDisplayMode(.large)
-        .onAppear { vm.load() }
+        .onAppear {
+            if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+        }
     }
 }

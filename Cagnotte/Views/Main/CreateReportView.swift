@@ -1,4 +1,5 @@
 import SwiftUI
+import AVFoundation
 
 struct CreateReportView: View {
     @Environment(\.dismiss) private var dismiss
@@ -12,6 +13,7 @@ struct CreateReportView: View {
     @State private var selectedTags: Set<String> = []
     @State private var capturedImages: [UIImage] = []
     @State private var showCamera = false
+    @State private var showCameraUnavailable = false
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var availableTags: [ReportTagResponse] = []
@@ -40,7 +42,18 @@ struct CreateReportView: View {
                                     }.offset(x: -4, y: 4)
                                 }
                             }
-                            Button { showCamera = true } label: {
+                            Button {
+                                if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                                    let status = AVCaptureDevice.authorizationStatus(for: .video)
+                                    if status == .denied || status == .restricted {
+                                        showCameraUnavailable = true
+                                    } else {
+                                        showCamera = true
+                                    }
+                                } else {
+                                    showCameraUnavailable = true
+                                }
+                            } label: {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 14).fill(Color.lightCardBg).frame(width: 80, height: 80)
                                     Image(systemName: "camera").font(.system(size: 20)).foregroundColor(.subtitleText)
@@ -95,6 +108,11 @@ struct CreateReportView: View {
             }
             .sheet(isPresented: $showCamera) {
                 CameraPickerView(image: Binding(get: { nil }, set: { if let img = $0 { capturedImages.append(img) } }), sourceType: .camera)
+            }
+            .alert("Caméra indisponible", isPresented: $showCameraUnavailable) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("L'accès à la caméra est désactivé. Activez-le dans Réglages > Habizy.")
             }
         }
     }

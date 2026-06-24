@@ -50,6 +50,7 @@ final class HomeViewModel: ObservableObject {
     }
 
     func refresh() async {
+        if case .loading = state { return }
         await fetchData(showLoading: false)
     }
 

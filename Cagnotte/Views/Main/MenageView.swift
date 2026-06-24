@@ -46,6 +46,7 @@ struct MenageView: View {
     @StateObject private var vm: MenageViewModel
     @State private var showCommentSheet = false
     @State private var showEditTaskSheet = false
+    @State private var hasAppeared = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: MenageViewModel(tokenManager: tokenManager))
@@ -101,7 +102,9 @@ struct MenageView: View {
             }
             .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar(.hidden, for: .navigationBar)
-            .onAppear { vm.load() }
+            .onAppear {
+                if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+            }
             .toast(message: Binding(get: { vm.errorMessage }, set: { vm.errorMessage = $0 }), type: .error)
             .sheet(isPresented: $showCommentSheet) {
                 CommentSheet { comment in
@@ -241,6 +244,7 @@ private struct CommentSheet: View {
     let onConfirm: (String?) -> Void
     @Environment(\.dismiss) private var dismiss
     @State private var text = ""
+    private let maxLength = 50
 
     var body: some View {
         NavigationStack {
@@ -252,6 +256,14 @@ private struct CommentSheet: View {
                     .padding(12)
                     .background(Color.white).cornerRadius(14)
                     .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.borderColor, lineWidth: 1))
+                    .onChange(of: text) { newVal in
+                        if newVal.count > maxLength { text = String(newVal.prefix(maxLength)) }
+                    }
+                HStack {
+                    Spacer()
+                    Text("\(text.count)/\(maxLength)")
+                        .font(.system(size: 12)).foregroundColor(.subtitleText)
+                }
                 Spacer()
             }
             .padding(20)
@@ -446,10 +458,11 @@ private struct DayCellView: View {
                     .font(.system(size: 9, weight: .medium)).foregroundColor(.darkText).lineLimit(1)
                 if let comment = m.comment, !comment.isEmpty {
                     Text(comment)
-                        .font(.system(size: 8)).foregroundColor(.subtitleText)
+                        .font(.system(size: 9)).foregroundColor(.subtitleText)
                         .multilineTextAlignment(.center)
+                        .lineLimit(nil)
                         .fixedSize(horizontal: false, vertical: true)
-                        .padding(.top, 1)
+                        .padding(.top, 2)
                 }
             }
             Spacer(minLength: 0)

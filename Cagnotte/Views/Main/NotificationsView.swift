@@ -2,6 +2,7 @@ import SwiftUI
 
 struct NotificationsView: View {
     @StateObject private var vm: NotificationsViewModel
+    @State private var hasAppeared = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: NotificationsViewModel(tokenManager: tokenManager))
@@ -44,7 +45,9 @@ struct NotificationsView: View {
                 }
             }
         }
-        .onAppear { vm.load() }
+        .onAppear {
+            if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+        }
     }
 }
 

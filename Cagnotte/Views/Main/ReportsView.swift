@@ -10,6 +10,7 @@ struct ReportsView: View {
     @State private var showCreateReport = false
     @State private var selectedReportId: String?
     @State private var showAddTagDialog = false
+    @State private var hasAppeared = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: ReportsViewModel(tokenManager: tokenManager))
@@ -118,7 +119,9 @@ struct ReportsView: View {
             .refreshable { await vm.refresh() }
             .background(Color.screenBackground.ignoresSafeArea())
             .toolbarBackground(.hidden, for: .navigationBar).toolbar(.hidden, for: .navigationBar)
-            .onAppear { vm.load() }
+            .onAppear {
+                if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+            }
             .toast(message: Binding(get: { vm.errorMessage }, set: { vm.errorMessage = $0 }), type: .error)
             .sheet(isPresented: $showCreateReport) {
                 CreateReportView(tokenManager: tokenManager) { vm.load() }

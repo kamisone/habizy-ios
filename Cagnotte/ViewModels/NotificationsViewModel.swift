@@ -29,6 +29,11 @@ final class NotificationsViewModel: ObservableObject {
         }
     }
 
+    func refresh() async {
+        guard !isLoading else { return }
+        if let updated = try? await repo.getAll() { notifications = updated }
+    }
+
     func markRead(notification: NotificationResponse) {
         Task {
             do {

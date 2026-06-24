@@ -27,21 +27,30 @@ final class RotationViewModel: ObservableObject {
     var colocationId: String? { tokenManager.colocationId }
 
     func load() {
-        guard let id = colocationId else { return }
         Task {
             isLoading = true
             defer { isLoading = false }
-            do {
-                async let rotationTask = repo.getRotation(colocationId: id)
-                async let meTask = authRepo.getMe()
-                entries = try await rotationTask
-                let me = try await meTask
-                currentUserId = me.id
-                isAdmin = me.isAdmin
-                hasReordered = false
-            } catch {
-                errorMessage = error.localizedDescription
-            }
+            await fetchData()
+        }
+    }
+
+    func refresh() async {
+        guard !isLoading else { return }
+        await fetchData()
+    }
+
+    private func fetchData() async {
+        guard let id = colocationId else { return }
+        do {
+            async let rotationTask = repo.getRotation(colocationId: id)
+            async let meTask = authRepo.getMe()
+            entries = try await rotationTask
+            let me = try await meTask
+            currentUserId = me.id
+            isAdmin = me.isAdmin
+            hasReordered = false
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 

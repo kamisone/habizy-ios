@@ -28,17 +28,26 @@ final class AdminSettingsViewModel: ObservableObject {
         Task {
             isLoading = true
             defer { isLoading = false }
-            do {
-                let detail = try await colocationRepo.getMyColocation()
-                colocation = detail.colocation
-                colocationName = detail.colocation.name
-                if let threshold = detail.colocation.spendingGapThreshold {
-                    spendingGapThreshold = String(format: "%.0f", threshold)
-                }
-                notificationsEnabled = detail.colocation.notificationsEnabled ?? true
-            } catch {
-                errorMessage = error.localizedDescription
+            await fetchData()
+        }
+    }
+
+    func refresh() async {
+        guard !isLoading else { return }
+        await fetchData()
+    }
+
+    private func fetchData() async {
+        do {
+            let detail = try await colocationRepo.getMyColocation()
+            colocation = detail.colocation
+            colocationName = detail.colocation.name
+            if let threshold = detail.colocation.spendingGapThreshold {
+                spendingGapThreshold = String(format: "%.0f", threshold)
             }
+            notificationsEnabled = detail.colocation.notificationsEnabled ?? true
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 

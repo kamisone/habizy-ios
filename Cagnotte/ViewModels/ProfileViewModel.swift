@@ -30,6 +30,7 @@ final class ProfileViewModel: ObservableObject {
     }
 
     func refresh() async {
+        guard !isLoading else { return }
         await fetchData(showLoading: false)
     }
 

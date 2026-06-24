@@ -3,6 +3,7 @@ import SwiftUI
 struct PurchaseHistoryView: View {
     @StateObject private var vm: ReceiptViewModel
     @State private var selectedReceipt: ReceiptResponse?
+    @State private var hasAppeared = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: ReceiptViewModel(tokenManager: tokenManager))
@@ -30,7 +31,9 @@ struct PurchaseHistoryView: View {
         .background(Color.screenBackground.ignoresSafeArea())
         .navigationTitle("Historique")
         .navigationBarTitleDisplayMode(.large)
-        .onAppear { vm.load() }
+        .onAppear {
+            if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+        }
         .sheet(item: $selectedReceipt) { receipt in
             ReceiptDetailSheet(receipt: receipt)
         }

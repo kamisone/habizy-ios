@@ -10,6 +10,7 @@ struct HomeView: View {
     @State private var showHistory = false
     @State private var showMenage = false
     @State private var selectedReportId: ReportNavItem? = nil
+    @State private var hasAppeared = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: HomeViewModel(tokenManager: tokenManager))
@@ -32,7 +33,9 @@ struct HomeView: View {
             .background(Color.screenBackground.ignoresSafeArea())
             .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar(.hidden, for: .navigationBar)
-            .onAppear { vm.load() }
+            .onAppear {
+                if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+            }
             .navigationDestination(isPresented: $showNotifications) {
                 NotificationsView(tokenManager: tokenManager)
             }

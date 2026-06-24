@@ -3,6 +3,7 @@ import SwiftUI
 struct RotationView: View {
     @StateObject private var vm: RotationViewModel
     @State private var showAddReceipt = false
+    @State private var hasAppeared = false
     private let tokenManager: TokenManager
 
     init(tokenManager: TokenManager) {
@@ -32,7 +33,9 @@ struct RotationView: View {
         .background(Color.screenBackground.ignoresSafeArea())
         .navigationTitle("Rotation")
         .navigationBarTitleDisplayMode(.large)
-        .onAppear { vm.load() }
+        .onAppear {
+            if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+        }
         .toast(message: Binding(
             get: { vm.errorMessage },
             set: { vm.errorMessage = $0 }

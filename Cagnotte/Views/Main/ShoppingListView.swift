@@ -7,6 +7,7 @@ struct ShoppingListView: View {
     @State private var showCatalogPicker = false
     @State private var selectedArticle: CatalogArticle?
     @State private var quantityInput = 1
+    @State private var hasAppeared = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: ShoppingViewModel(tokenManager: tokenManager))
@@ -170,7 +171,9 @@ struct ShoppingListView: View {
             .background(Color.screenBackground.ignoresSafeArea())
             .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar(.hidden, for: .navigationBar)
-            .onAppear { vm.load() }
+            .onAppear {
+                if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+            }
             .toast(message: Binding(
                 get: { vm.errorMessage },
                 set: { vm.errorMessage = $0 }

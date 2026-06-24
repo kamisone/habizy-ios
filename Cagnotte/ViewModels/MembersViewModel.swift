@@ -23,18 +23,27 @@ final class MembersViewModel: ObservableObject {
         Task {
             isLoading = true
             defer { isLoading = false }
-            do {
-                async let detailTask = colocationRepo.getMyColocation()
-                async let meTask = authRepo.getMe()
-                let detail = try await detailTask
-                let me = try await meTask
-                members = detail.members
-                colocationId = detail.colocation.id
-                currentUserId = me.id
-                isAdmin = detail.members.first(where: { $0.user.id == me.id })?.role == "admin" || me.isAdmin
-            } catch {
-                errorMessage = error.localizedDescription
-            }
+            await fetchData()
+        }
+    }
+
+    func refresh() async {
+        guard !isLoading else { return }
+        await fetchData()
+    }
+
+    private func fetchData() async {
+        do {
+            async let detailTask = colocationRepo.getMyColocation()
+            async let meTask = authRepo.getMe()
+            let detail = try await detailTask
+            let me = try await meTask
+            members = detail.members
+            colocationId = detail.colocation.id
+            currentUserId = me.id
+            isAdmin = detail.members.first(where: { $0.user.id == me.id })?.role == "admin" || me.isAdmin
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 

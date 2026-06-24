@@ -11,6 +11,7 @@ struct ProfileView: View {
     @State private var showChangeName = false
     @State private var currentPassword = ""
     @State private var newPassword = ""
+    @State private var hasAppeared = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: ProfileViewModel(tokenManager: tokenManager))
@@ -60,7 +61,9 @@ struct ProfileView: View {
             .background(Color.screenBackground.ignoresSafeArea())
             .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar(.hidden, for: .navigationBar)
-            .onAppear { vm.load() }
+            .onAppear {
+                if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+            }
             .navigationDestination(isPresented: $showMembers) {
                 MembersView(tokenManager: tokenManager)
             }

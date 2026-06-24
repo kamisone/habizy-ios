@@ -29,4 +29,9 @@ final class ReceiptViewModel: ObservableObject {
             }
         }
     }
+
+    func refresh() async {
+        guard let id = colocationId, !isLoading else { return }
+        if let updated = try? await repo.getReceipts(colocationId: id) { receipts = updated }
+    }
 }

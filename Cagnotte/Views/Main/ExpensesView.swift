@@ -4,6 +4,7 @@ struct ExpensesView: View {
     @EnvironmentObject var tokenManager: TokenManager
     @StateObject private var vm: ExpensesViewModel
     @State private var selectedReceipt: ReceiptResponse?
+    @State private var hasAppeared = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: ExpensesViewModel(tokenManager: tokenManager))
@@ -52,7 +53,9 @@ struct ExpensesView: View {
             .background(Color.screenBackground.ignoresSafeArea())
             .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar(.hidden, for: .navigationBar)
-            .onAppear { vm.load() }
+            .onAppear {
+                if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+            }
             .toast(message: Binding(
                 get: { vm.errorMessage },
                 set: { vm.errorMessage = $0 }

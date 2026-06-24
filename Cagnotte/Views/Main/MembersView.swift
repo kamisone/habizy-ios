@@ -4,6 +4,7 @@ struct MembersView: View {
     @StateObject private var vm: MembersViewModel
     @State private var memberToRemove: ColocationMemberResponse?
     @State private var showConfirm = false
+    @State private var hasAppeared = false
 
     init(tokenManager: TokenManager) {
         _vm = StateObject(wrappedValue: MembersViewModel(tokenManager: tokenManager))
@@ -32,7 +33,9 @@ struct MembersView: View {
         .background(Color.screenBackground.ignoresSafeArea())
         .navigationTitle("Colocataires")
         .navigationBarTitleDisplayMode(.large)
-        .onAppear { vm.load() }
+        .onAppear {
+            if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+        }
         .alert("Retirer ce membre ?", isPresented: $showConfirm) {
             Button("Retirer", role: .destructive) {
                 if let m = memberToRemove { vm.removeMember(userId: m.user.id) }
