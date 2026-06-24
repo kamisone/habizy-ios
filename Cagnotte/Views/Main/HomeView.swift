@@ -423,6 +423,20 @@ private struct ReportCardView: View {
                     .foregroundColor(.darkText)
                     .lineLimit(1)
 
+                if let tags = report.tags, !tags.isEmpty {
+                    HStack(spacing: 4) {
+                        ForEach(tags.prefix(3), id: \.self) { tag in
+                            let c = tagColor(tag)
+                            Text(tag)
+                                .font(.system(size: 9, weight: .semibold))
+                                .foregroundColor(c)
+                                .padding(.horizontal, 5).padding(.vertical, 2)
+                                .background(c.opacity(0.12))
+                                .cornerRadius(5)
+                        }
+                    }
+                }
+
                 HStack(spacing: 6) {
                     RoommateAvatar(user: report.user, size: 18, cornerRadius: 6, fontSize: 8)
                     Text(report.user.name)
