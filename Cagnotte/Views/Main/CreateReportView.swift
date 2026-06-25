@@ -128,7 +128,7 @@ struct CreateReportView: View {
                     let url = try await storageRepo.uploadImage(image, folder: "reports")
                     uploadedUrls.append(url)
                 } catch {
-                    errorMessage = "Echec upload photo"; return
+                    errorMessage = "Échec upload photo"; return
                 }
             }
             do {

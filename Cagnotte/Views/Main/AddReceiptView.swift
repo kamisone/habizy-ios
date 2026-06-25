@@ -359,7 +359,7 @@ struct AddReceiptView: View {
             do {
                 photoUrl = try await storageRepo.uploadImage(image)
             } catch {
-                errorMessage = "Echec de l'upload photo : \(error.localizedDescription)"
+                errorMessage = "Échec de l'upload photo : \(error.localizedDescription)"
                 return
             }
         }

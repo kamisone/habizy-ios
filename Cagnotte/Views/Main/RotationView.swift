@@ -58,14 +58,14 @@ struct RotationView: View {
                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                 .foregroundColor(.subtitleText)
             if vm.isAdmin {
-                Text("Generez l'ordre pour lancer la rotation.")
+                Text("Générez l'ordre pour lancer la rotation.")
                     .font(.system(size: 14))
                     .foregroundColor(.lightText)
                     .multilineTextAlignment(.center)
                 Button {
                     vm.generate()
                 } label: {
-                    Text("Generer l'ordre")
+                    Text("Générer l'ordre")
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .foregroundColor(.white)
                         .padding(.horizontal, 28)
@@ -75,7 +75,7 @@ struct RotationView: View {
                 }
                 .buttonStyle(.plain)
             } else {
-                Text("L'administrateur doit generer l'ordre.")
+                Text("L'administrateur doit générer l'ordre.")
                     .font(.system(size: 14))
                     .foregroundColor(.lightText)
                     .multilineTextAlignment(.center)

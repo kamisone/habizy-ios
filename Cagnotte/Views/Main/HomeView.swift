@@ -132,7 +132,7 @@ struct HomeView: View {
                 // Stat row
                 HStack(spacing: 12) {
                     StatCard(label: "Mon tour", value: data.daysUntilTurn, valueColor: .darkText)
-                    StatCard(label: "Mes depenses", value: "-\(data.mySpent.euroFormatted)", valueColor: .coralRed)
+                    StatCard(label: "Mes dépenses", value: "-\(data.mySpent.euroFormatted)", valueColor: .coralRed)
                 }
 
                 // Current shopper card

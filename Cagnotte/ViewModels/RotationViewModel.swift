@@ -81,7 +81,7 @@ final class RotationViewModel: ObservableObject {
         Task {
             do {
                 try await api.toggleMemberActive(colocationId: id, userId: userId)
-                successMessage = "Statut mis a jour"
+                successMessage = "Statut mis à jour"
                 load()
             } catch {
                 errorMessage = error.localizedDescription

@@ -39,7 +39,7 @@ struct StatsView: View {
 
     private func totalCard(_ stats: ExpenseStatsResponse) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Total des depenses")
+            Text("Total des dépenses")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundColor(.subtitleText)
             Text(stats.totalSpent.euroFormatted)
@@ -67,7 +67,7 @@ struct StatsView: View {
         let maxAmount = stats.byRoommate.map { $0.total }.max() ?? 1
 
         return VStack(alignment: .leading, spacing: 14) {
-            Text("Depenses par colocataire")
+            Text("Dépenses par colocataire")
                 .font(.system(size: 16, weight: .semibold, design: .rounded))
                 .foregroundColor(.darkText)
 
@@ -105,7 +105,7 @@ struct StatsView: View {
         let avg = stats.totalSpent / Double(count)
 
         return VStack(alignment: .leading, spacing: 12) {
-            Text("Equilibre des depenses")
+            Text("Équilibre des dépenses")
                 .font(.system(size: 16, weight: .semibold, design: .rounded))
                 .foregroundColor(.darkText)
             Text("Moyenne par personne : \(avg.euroFormatted)")
@@ -135,7 +135,7 @@ struct StatsView: View {
         guard !stats.byCategory.isEmpty else { return AnyView(EmptyView()) }
 
         return AnyView(VStack(alignment: .leading, spacing: 14) {
-            Text("Depenses par categorie")
+            Text("Dépenses par catégorie")
                 .font(.system(size: 16, weight: .semibold, design: .rounded))
                 .foregroundColor(.darkText)
 
