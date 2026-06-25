@@ -63,7 +63,7 @@ enum APIError: LocalizedError {
 
 // MARK: - Base URL Helper
 private func baseURL() -> String {
-#if DEBUG
+#if targetEnvironment(simulator)
     return "http://localhost:4000/"
 #else
     return "https://silomis.com/api/"

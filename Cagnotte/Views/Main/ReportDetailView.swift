@@ -107,6 +107,8 @@ struct ReportDetailView: View {
                 HStack(spacing: 8) {
                     TextField("Ajouter un commentaire...", text: $commentText)
                         .textFieldStyle(.plain)
+                        .foregroundColor(.darkText)
+                        .tint(.greenPrimary)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
                         .background(Color.lightCardBg)
@@ -174,7 +176,10 @@ private struct EditReportSheet: View {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Titre").font(.system(size: 13, weight: .medium)).foregroundColor(.subtitleText)
                         TextField("Titre du signalement", text: $title)
-                            .textFieldStyle(.plain).padding(12)
+                            .textFieldStyle(.plain)
+                            .foregroundColor(.darkText)
+                            .tint(.greenPrimary)
+                            .padding(12)
                             .background(Color.white).cornerRadius(14)
                             .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.borderColor, lineWidth: 1))
                     }

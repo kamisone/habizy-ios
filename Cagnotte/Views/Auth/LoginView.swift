@@ -144,6 +144,8 @@ struct AppTextField: View {
                 }
             }
             .font(.system(size: 15))
+            .foregroundColor(.darkText)
+            .tint(.greenPrimary)
 
             if isSecure {
                 Button {

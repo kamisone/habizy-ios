@@ -56,9 +56,8 @@
 		A3DB54B90399949AE1995999 /* ContributeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2BBF833BCC76A42AC0B5F9 /* ContributeViewModel.swift */; };
 		AA11223344556677889900AB /* ArticleStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB11223344556677889900CD /* ArticleStatsView.swift */; };
 		AB99EF69818511FA06CC8CA7 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA7570135BE824C09936057 /* NotificationsView.swift */; };
-		B4B4B4B400000001B4B4B4B4 /* logo_habizy.png in Resources */ = {isa = PBXBuildFile; fileRef = B3B3B3B300000001B3B3B3B3 /* logo_habizy.png */; };
-		GS001100220033GGSERVBLD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = GS001100220033GGSERVINFO /* GoogleService-Info.plist */; };
 		AC001100220033AACASSETS01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC001100220033AACASSETS00 /* Assets.xcassets */; };
+		B4B4B4B400000001B4B4B4B4 /* logo_habizy.png in Resources */ = {isa = PBXBuildFile; fileRef = B3B3B3B300000001B3B3B3B3 /* logo_habizy.png */; };
 		BAFD90C867D1057E32A3C21D /* ContributeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72C800DB40BDCE9183D8218 /* ContributeView.swift */; };
 		CC112233445566778899AABB /* CatalogRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD112233445566778899AABB /* CatalogRepository.swift */; };
 		D1D1D1D100000001D1D1D1D1 /* MenageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D2D2D200000001D2D2D2D2 /* MenageViewModel.swift */; };
@@ -71,11 +70,12 @@
 		F89C7C4690D1026BE107F886 /* CreateUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EEBC7F30293587074073AC /* CreateUserViewModel.swift */; };
 		FD759D0B826B82504417D8CD /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6594F56BBF01C36F8770E36E /* LoginView.swift */; };
 		FE237AEC7E110B63C3837024 /* NotificationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BCC1BBE3F557A81DEBC447 /* NotificationsViewModel.swift */; };
+		GS001100220033GGSERVBLD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = GS001100220033GGSERVINFO /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0A25AC2317AF559102C955E8 /* AuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRepository.swift; sourceTree = "<group>"; };
-		17A7DD04A3DD8584D836E045 /* Cagnotte.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Cagnotte.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		17A7DD04A3DD8584D836E045 /* Cagnotte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cagnotte.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28424EB6B52634CBE25A1B06 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		29EB7704EAE07FD437BFB795 /* ContributionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContributionRepository.swift; sourceTree = "<group>"; };
 		2BA7570135BE824C09936057 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
@@ -112,10 +112,9 @@
 		A2A2A2A200000009A2A2A2A2 /* PressableStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressableStyle.swift; sourceTree = "<group>"; };
 		A2A2A2A20000000AA2A2A2A2 /* CountingText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountingText.swift; sourceTree = "<group>"; };
 		A2A2A2A20000000BA2A2A2A2 /* BreathingEmptyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingEmptyState.swift; sourceTree = "<group>"; };
+		AC001100220033AACASSETS00 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AF5768F0CE789DE45A156767 /* ShoppingRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingRepository.swift; sourceTree = "<group>"; };
 		AF7E81887E39B71F777096A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		GS001100220033GGSERVINFO /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		AC001100220033AACASSETS00 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B3B3B3B300000001B3B3B3B3 /* logo_habizy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_habizy.png; sourceTree = "<group>"; };
 		BB11223344556677889900CD /* ArticleStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleStatsView.swift; sourceTree = "<group>"; };
 		BB5FBBD447C9FAFE8A94ED8F /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
@@ -139,6 +138,7 @@
 		F44BCBB008F78FD2A8268E11 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		F7EEBC7F30293587074073AC /* CreateUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserViewModel.swift; sourceTree = "<group>"; };
 		FF2BBF833BCC76A42AC0B5F9 /* ContributeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContributeViewModel.swift; sourceTree = "<group>"; };
+		GS001100220033GGSERVINFO /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,11 +343,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
-				TargetAttributes = {
-					06D94A4656A5D05911DA792F = {
-						DevelopmentTeam = "";
-					};
-				};
 			};
 			buildConfigurationList = 6621AF336180FB9767CB9A0A /* Build configuration list for PBXProject "Cagnotte" */;
 			developmentRegion = en;
@@ -459,8 +454,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				DEVELOPMENT_TEAM = TH2W28MY37;
 				INFOPLIST_FILE = Cagnotte/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -534,8 +529,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				DEVELOPMENT_TEAM = TH2W28MY37;
 				INFOPLIST_FILE = Cagnotte/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
