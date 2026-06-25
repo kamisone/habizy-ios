@@ -3,6 +3,7 @@ import SwiftUI
 struct ShoppingListView: View {
     @EnvironmentObject var tokenManager: TokenManager
     @StateObject private var vm: ShoppingViewModel
+    @Environment(\.dismiss) private var dismiss
     @State private var showAddCatalogDialog = false
     @State private var showCatalogPicker = false
     @State private var selectedArticle: CatalogArticle?
@@ -14,10 +15,20 @@ struct ShoppingListView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 14) {
-                    // Header
+        ScrollView {
+            VStack(spacing: 14) {
+                // Header with back button
+                HStack(alignment: .center, spacing: 12) {
+                    Button { dismiss() } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundColor(.darkText)
+                            .frame(width: 36, height: 36)
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 11))
+                            .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
+                    }
+                    .buttonStyle(.plain)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Articles manquants")
                             .font(.system(size: 22, weight: .bold, design: .rounded))
@@ -26,9 +37,11 @@ struct ShoppingListView: View {
                             .font(.system(size: 13, weight: .medium))
                             .foregroundColor(.subtitleText)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 18)
-                    .padding(.top, 16)
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 18)
+                .padding(.top, 16)
 
                     if vm.isLoading {
                         ProgressView().tint(.greenPrimary).padding(40)
@@ -167,38 +180,36 @@ struct ShoppingListView: View {
                     Spacer(minLength: 80)
                 }
             }
-            .refreshable { await vm.refresh() }
-            .background(Color.screenBackground.ignoresSafeArea())
-            .toolbarBackground(.hidden, for: .navigationBar)
-            .toolbar(.hidden, for: .navigationBar)
-            .onAppear {
-                if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+        .refreshable { await vm.refresh() }
+        .background(Color.screenBackground.ignoresSafeArea())
+        .navigationBarHidden(true)
+        .onAppear {
+            if hasAppeared { Task { await vm.refresh() } } else { vm.load(); hasAppeared = true }
+        }
+        .toast(message: Binding(
+            get: { vm.errorMessage },
+            set: { vm.errorMessage = $0 }
+        ), type: .error)
+        .toast(message: Binding(
+            get: { vm.successMessage },
+            set: { vm.successMessage = $0 }
+        ), type: .success)
+        .sheet(isPresented: $showAddCatalogDialog) {
+            AddCatalogArticleSheet(existingCategories: vm.categories) { name, category in
+                vm.addCatalogArticle(name: name, category: category)
             }
-            .toast(message: Binding(
-                get: { vm.errorMessage },
-                set: { vm.errorMessage = $0 }
-            ), type: .error)
-            .toast(message: Binding(
-                get: { vm.successMessage },
-                set: { vm.successMessage = $0 }
-            ), type: .success)
-            .sheet(isPresented: $showAddCatalogDialog) {
-                AddCatalogArticleSheet(existingCategories: vm.categories) { name, category in
-                    vm.addCatalogArticle(name: name, category: category)
-                }
+        }
+        .sheet(isPresented: $showCatalogPicker) {
+            CatalogPickerSheet(articles: vm.catalogArticles) { article in
+                showCatalogPicker = false
+                selectedArticle = article
+                quantityInput = 1
             }
-            .sheet(isPresented: $showCatalogPicker) {
-                CatalogPickerSheet(articles: vm.catalogArticles) { article in
-                    showCatalogPicker = false
-                    selectedArticle = article
-                    quantityInput = 1
-                }
-            }
-            .sheet(item: $selectedArticle) { article in
-                QuantityPickerSheet(articleName: article.name, quantity: $quantityInput) {
-                    vm.addItem(name: article.name, quantity: quantityInput, assigneeId: nil)
-                    selectedArticle = nil
-                }
+        }
+        .sheet(item: $selectedArticle) { article in
+            QuantityPickerSheet(articleName: article.name, quantity: $quantityInput) {
+                vm.addItem(name: article.name, quantity: quantityInput, assigneeId: nil)
+                selectedArticle = nil
             }
         }
     }

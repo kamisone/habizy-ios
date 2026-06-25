@@ -135,112 +135,15 @@ struct HomeView: View {
                     StatCard(label: "Mes dépenses", value: "-\(data.mySpent.euroFormatted)", valueColor: .coralRed)
                 }
 
-                // Current shopper card
-                if data.isMyTurn {
-                    Button { showRotation = true } label: {
-                        HStack(spacing: 14) {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 17)
-                                    .fill(Color.white.opacity(0.25))
-                                    .frame(width: 52, height: 52)
-                                Image(systemName: "cart")
-                                    .font(.system(size: 22, weight: .semibold))
-                                    .foregroundColor(.white)
-                            }
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("C'est ton tour !")
-                                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                                    .foregroundColor(.white)
-                                Text("Tu es le prochain a faire les courses")
-                                    .font(.system(size: 13, weight: .medium))
-                                    .foregroundColor(.white.opacity(0.9))
-                            }
-                            Spacer()
-                        }
-                        .padding(20)
-                        .background(
-                            LinearGradient(
-                                colors: [Color(hex: "#FFB020"), Color(hex: "#FF8C00")],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .cornerRadius(26)
-                        .shadow(color: Color(hex: "#FF8C00").opacity(0.4), radius: 16, x: 0, y: 6)
-                    }
-                    .buttonStyle(.plain)
-                } else {
-                    Button { showRotation = true } label: {
-                        HStack(spacing: 14) {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 17)
-                                    .fill(Color.white.opacity(0.2))
-                                    .frame(width: 52, height: 52)
-                                Text(data.currentShopperInitial)
-                                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                                    .foregroundColor(.white)
-                            }
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Aux courses")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.white.opacity(0.8))
-                                Text(data.currentShopperName)
-                                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                                    .foregroundColor(.white)
-                            }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundColor(.white)
-                                .padding(8)
-                                .background(Color.white.opacity(0.2))
-                                .cornerRadius(10)
-                        }
-                        .padding(20)
-                        .background(
-                            LinearGradient(
-                                colors: [Color(hex: "#3B82F6"), Color(hex: "#1E40AF")],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .cornerRadius(26)
-                        .shadow(color: Color(hex: "#1E40AF").opacity(0.3), radius: 12, x: 0, y: 4)
-                    }
-                    .buttonStyle(.plain)
-                }
+                // Faire les courses section
+                coursesSection(data)
 
-                // Shopping preview
-                shoppingPreviewCard(data)
+                // Ménage section
+                menageSection
 
-                // Quick actions
-                HStack(spacing: 12) {
-                    QuickActionCard(
-                        icon: "chart.bar",
-                        label: "Statistiques",
-                        bgColor: Color.purple.opacity(0.12),
-                        iconColor: .purple
-                    ) { showStats = true }
-                    QuickActionCard(
-                        icon: "clock.arrow.circlepath",
-                        label: "Historique",
-                        bgColor: Color.appBlue.opacity(0.10),
-                        iconColor: .appBlue
-                    ) { showHistory = true }
-                }
-                HStack(spacing: 12) {
-                    QuickActionCard(
-                        icon: "house",
-                        label: "Ménage",
-                        bgColor: Color.orange.opacity(0.12),
-                        iconColor: .orange
-                    ) { showMenage = true }
-                    Spacer()
-                }
-
-                // Recent reports
+                // Signalements section
                 if !data.recentReports.isEmpty {
-                    recentReportsSection(data.recentReports)
+                    signalementsSection(data.recentReports)
                 }
 
                 Spacer(minLength: 16)
@@ -251,24 +154,287 @@ struct HomeView: View {
         .refreshable { await vm.refresh() }
     }
 
-    private func recentReportsSection(_ reports: [ReportResponse]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Signalements récents")
-                .font(.system(size: 16, weight: .semibold, design: .rounded))
-                .foregroundColor(.darkText)
+    // MARK: - Faire les courses section
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(reports) { report in
-                        Button { selectedReportId = ReportNavItem(id: report.id) } label: {
-                            ReportCardView(report: report)
+    private func coursesSection(_ data: HomeViewModel.HomeData) -> some View {
+        VStack(spacing: 0) {
+            // Section header
+            HStack(spacing: 10) {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color.greenPrimary.opacity(0.12))
+                    .frame(width: 34, height: 34)
+                    .overlay {
+                        Image(systemName: "cart")
+                            .foregroundColor(.greenPrimary)
+                            .font(.system(size: 15))
+                    }
+                Text("Faire les courses")
+                    .font(.system(size: 17, weight: .semibold, design: .rounded))
+                    .foregroundColor(.darkText)
+                Spacer()
+            }
+            .padding(16)
+
+            // Turn indicator (flat, no outer shadow)
+            Group {
+                if data.isMyTurn {
+                    Button { showRotation = true } label: {
+                        HStack(spacing: 12) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 13)
+                                    .fill(Color.white.opacity(0.25))
+                                    .frame(width: 40, height: 40)
+                                Image(systemName: "cart")
+                                    .font(.system(size: 17, weight: .semibold))
+                                    .foregroundColor(.white)
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("C'est ton tour !")
+                                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                                    .foregroundColor(.white)
+                                Text("Tu es le prochain a faire les courses")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.white.opacity(0.85))
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.white.opacity(0.7))
+                                .font(.system(size: 13, weight: .semibold))
                         }
-                        .buttonStyle(PressableButtonStyle())
+                        .padding(14)
+                        .background(
+                            LinearGradient(colors: [Color(hex: "#FFB020"), Color(hex: "#FF9800")],
+                                           startPoint: .leading, endPoint: .trailing)
+                        )
+                        .cornerRadius(16)
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Button { showRotation = true } label: {
+                        HStack(spacing: 12) {
+                            Text(data.currentShopperInitial)
+                                .font(.system(size: 16, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                                .frame(width: 40, height: 40)
+                                .background(RoundedRectangle(cornerRadius: 13).fill(Color.white.opacity(0.25)))
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Aux courses")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.white.opacity(0.8))
+                                Text(data.currentShopperName)
+                                    .font(.system(size: 18, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.white)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.white.opacity(0.7))
+                                .font(.system(size: 13, weight: .semibold))
+                        }
+                        .padding(14)
+                        .background(
+                            LinearGradient(colors: [Color(hex: "#3B82F6"), Color(hex: "#1E40AF")],
+                                           startPoint: .leading, endPoint: .trailing)
+                        )
+                        .cornerRadius(16)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 16)
+
+            Divider().padding(.horizontal, 16).padding(.top, 14)
+
+            // Shopping preview
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    Text("Articles manquants")
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .foregroundColor(.darkText)
+                    Spacer()
+                    Text("\(data.shoppingItemCount) à acheter")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.greenPrimary)
+                }
+                .padding(.bottom, 10)
+
+                if data.shoppingPreview.isEmpty {
+                    Text("Aucun article manquant")
+                        .font(.system(size: 13))
+                        .foregroundColor(.subtitleText)
+                } else {
+                    ForEach(data.shoppingPreview) { item in
+                        HStack(spacing: 10) {
+                            Circle().fill(Color.greenPrimary).frame(width: 7, height: 7)
+                            Text(item.name)
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(.bodyText)
+                                .lineLimit(1)
+                            Spacer()
+                            Text("x\(item.quantity)")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(.subtitleText)
+                        }
+                        .padding(.vertical, 5)
+                    }
+                    let remaining = data.shoppingItemCount - data.shoppingPreview.count
+                    if remaining > 0 {
+                        Text("Voir les \(remaining) autres articles")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(.greenPrimary)
+                            .padding(.top, 10)
                     }
                 }
-                .padding(.trailing, 4)
             }
+            .padding(.horizontal, 16)
+            .padding(.top, 14)
+            .onTapGesture { showShopping = true }
+
+            Divider().padding(.horizontal, 16).padding(.top, 14)
+
+            // Statistiques + Historique buttons
+            HStack(spacing: 10) {
+                sectionActionButton(icon: "chart.bar", label: "Statistiques", color: .purple) { showStats = true }
+                sectionActionButton(icon: "clock.arrow.circlepath", label: "Historique", color: .appBlue) { showHistory = true }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 14)
+            .padding(.bottom, 16)
         }
+        .background(Color.white)
+        .cornerRadius(22)
+        .shadow(color: .black.opacity(0.07), radius: 8, x: 0, y: 2)
+    }
+
+    @ViewBuilder
+    private func sectionActionButton(icon: String, label: String, color: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 8) {
+                Image(systemName: icon)
+                    .foregroundColor(color)
+                    .font(.system(size: 15))
+                Text(label)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(color)
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity)
+            .background(color.opacity(0.08))
+            .cornerRadius(14)
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - Ménage section
+
+    private var menageSection: some View {
+        Button { showMenage = true } label: {
+            HStack(spacing: 14) {
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(Color.orange.opacity(0.12))
+                    .frame(width: 44, height: 44)
+                    .overlay {
+                        Image(systemName: "bubbles.and.sparkles")
+                            .foregroundColor(.orange)
+                            .font(.system(size: 18))
+                    }
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Ménage")
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
+                        .foregroundColor(.darkText)
+                    Text("Planifier et suivre le ménage")
+                        .font(.system(size: 12))
+                        .foregroundColor(.subtitleText)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundColor(.subtitleText)
+                    .font(.system(size: 14, weight: .semibold))
+            }
+            .padding(16)
+            .background(Color.white)
+            .cornerRadius(22)
+            .shadow(color: .black.opacity(0.07), radius: 8, x: 0, y: 2)
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - Signalements section
+
+    private func signalementsSection(_ reports: [ReportResponse]) -> some View {
+        VStack(spacing: 0) {
+            // Section header
+            HStack(spacing: 10) {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color.coralRed.opacity(0.12))
+                    .frame(width: 34, height: 34)
+                    .overlay {
+                        Image(systemName: "flag")
+                            .foregroundColor(.coralRed)
+                            .font(.system(size: 14))
+                    }
+                Text("Signalements récents")
+                    .font(.system(size: 17, weight: .semibold, design: .rounded))
+                    .foregroundColor(.darkText)
+                Spacer()
+            }
+            .padding(.top, 16)
+            .padding(.horizontal, 16)
+
+            ForEach(Array(reports.enumerated()), id: \.element.id) { index, report in
+                Button { selectedReportId = ReportNavItem(id: report.id) } label: {
+                    HStack(spacing: 12) {
+                        Group {
+                            if let first = report.photoUrls?.first, let url = URL(string: first) {
+                                AsyncImage(url: url) { phase in
+                                    if case .success(let img) = phase {
+                                        img.resizable().scaledToFill()
+                                    } else {
+                                        Color.lightCardBg
+                                    }
+                                }
+                                .frame(width: 46, height: 46)
+                                .clipShape(RoundedRectangle(cornerRadius: 13))
+                            } else {
+                                RoundedRectangle(cornerRadius: 13)
+                                    .fill(Color.coralRed.opacity(0.1))
+                                    .frame(width: 46, height: 46)
+                                    .overlay {
+                                        Image(systemName: "flag")
+                                            .foregroundColor(.coralRed)
+                                            .font(.system(size: 16))
+                                    }
+                            }
+                        }
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(report.title)
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundColor(.darkText)
+                                .lineLimit(1)
+                            Text("\(report.user.name) · \(formatTimeAgo(report.createdAt))")
+                                .font(.system(size: 12))
+                                .foregroundColor(.subtitleText)
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.subtitleText)
+                            .font(.system(size: 13))
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                }
+                .buttonStyle(.plain)
+
+                if index < reports.count - 1 {
+                    Divider().padding(.horizontal, 16)
+                }
+            }
+
+            Spacer(minLength: 12)
+        }
+        .background(Color.white)
+        .cornerRadius(22)
+        .shadow(color: .black.opacity(0.07), radius: 8, x: 0, y: 2)
     }
 
     private func spendingCard(_ data: HomeViewModel.HomeData) -> some View {
