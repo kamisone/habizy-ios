@@ -137,6 +137,10 @@ struct ReportsView: View {
                     showAddTagDialog = false
                 }
             }
+            .onReceive(NotificationCenter.default.publisher(for: .popToTabRoot)) { _ in
+                selectedReportId = nil
+                showCreateReport = false
+            }
         }
     }
 }

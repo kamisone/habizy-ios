@@ -4,6 +4,7 @@ struct ArticleStatsView: View {
     private let tokenManager: TokenManager
     private let repo: ReceiptRepository
 
+    @Environment(\.dismiss) private var dismiss
     @State private var stats: [ArticleStat] = []
     @State private var isLoading = true
     @State private var errorMessage: String?
@@ -68,6 +69,9 @@ struct ArticleStatsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .background(Color.screenBackground.ignoresSafeArea())
         .task { await load() }
+        .onReceive(NotificationCenter.default.publisher(for: .popToTabRoot)) { _ in
+            dismiss()
+        }
     }
 
     private func load() async {

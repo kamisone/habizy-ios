@@ -87,6 +87,11 @@ struct ProfileView: View {
                 get: { vm.successMessage },
                 set: { vm.successMessage = $0 }
             ), type: .success)
+            .onReceive(NotificationCenter.default.publisher(for: .popToTabRoot)) { _ in
+                showMembers = false
+                showCreateUser = false
+                showAdmin = false
+            }
         }
     }
 

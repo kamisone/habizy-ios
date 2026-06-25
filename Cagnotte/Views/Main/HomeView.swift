@@ -59,6 +59,15 @@ struct HomeView: View {
                     ReportDetailView(reportId: item.id, tokenManager: tokenManager)
                 }
             }
+            .onReceive(NotificationCenter.default.publisher(for: .popToTabRoot)) { _ in
+                showNotifications = false
+                showRotation = false
+                showShopping = false
+                showStats = false
+                showHistory = false
+                showMenage = false
+                selectedReportId = nil
+            }
         }
     }
 

@@ -11,12 +11,52 @@ enum APIError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidURL:            return "URL invalide"
-        case .noData:                return "Aucune donnée reçue"
-        case .decodingError(let m):  return "Erreur de décodage: \(m)"
-        case .serverError(_, let m): return m
-        case .unauthorized:          return "Session expirée, veuillez vous reconnecter"
-        case .unknown(let m):        return m
+        case .invalidURL:                    return "URL invalide"
+        case .noData:                        return "Aucune donnée reçue"
+        case .decodingError(let m):          return "Erreur de décodage: \(m)"
+        case .serverError(let code, let m):  return APIError.mapServerError(code, m)
+        case .unauthorized:                  return "Session expirée, veuillez vous reconnecter"
+        case .unknown:                       return "Une erreur inattendue est survenue"
+        }
+    }
+
+    private static func mapServerError(_ statusCode: Int, _ serverMsg: String) -> String {
+        let s = serverMsg.lowercased()
+        if s.contains("invalid credentials") || s.contains("credentials") {
+            return "Email ou mot de passe incorrect"
+        } else if s.contains("user not found") {
+            return "Aucun compte trouvé avec cet email"
+        } else if s.contains("current password") {
+            return "Mot de passe actuel incorrect"
+        } else if s.contains("email already") || s.contains("already registered") {
+            return "Cette adresse email est déjà utilisée"
+        } else if s.contains("invitation") || s.contains("invite") {
+            return "Code d'invitation invalide ou expiré"
+        } else if s.contains("expired") {
+            return "Session expirée, veuillez vous reconnecter"
+        } else if s.contains("access denied") || s.contains("forbidden") {
+            return "Accès refusé"
+        } else if s.contains("conflict") {
+            return "Cette action a déjà été effectuée"
+        } else if s.contains("validation") || s.contains("invalid") {
+            return "Données invalides"
+        } else if s.contains("not found") {
+            return "Ressource introuvable"
+        }
+        return mapStatusCode(statusCode)
+    }
+
+    private static func mapStatusCode(_ code: Int) -> String {
+        switch code {
+        case 400: return "Requête invalide"
+        case 401: return "Email ou mot de passe incorrect"
+        case 403: return "Accès refusé"
+        case 404: return "Ressource introuvable"
+        case 409: return "Cette action a déjà été effectuée"
+        case 422: return "Données invalides"
+        case 429: return "Trop de requêtes, veuillez réessayer"
+        case 500...599: return "Erreur serveur, veuillez réessayer"
+        default: return "Une erreur inattendue est survenue"
         }
     }
 }

@@ -1,5 +1,9 @@
 import SwiftUI
 
+extension Notification.Name {
+    static let popToTabRoot = Notification.Name("popToTabRoot")
+}
+
 class TabBarVisibility: ObservableObject {
     @Published var isVisible = true
 }
@@ -33,7 +37,9 @@ struct MainTabView: View {
             .background(Color.screenBackground)
 
             if tabBarVisibility.isVisible {
-                CustomTabBar(selectedTab: $selectedTab)
+                CustomTabBar(selectedTab: $selectedTab, onTabReselected: {
+                    NotificationCenter.default.post(name: .popToTabRoot, object: nil)
+                })
             }
         }
         .environmentObject(tabBarVisibility)
@@ -45,24 +51,25 @@ struct MainTabView: View {
 
 struct CustomTabBar: View {
     @Binding var selectedTab: Int
+    var onTabReselected: () -> Void = {}
 
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 TabBarItem(icon: "house", label: "Accueil", isSelected: selectedTab == 0) {
-                    selectedTab = 0
+                    if selectedTab == 0 { onTabReselected() } else { selectedTab = 0 }
                 }
                 TabBarItem(icon: "flag", label: "Signaler", isSelected: selectedTab == 1) {
-                    selectedTab = 1
+                    if selectedTab == 1 { onTabReselected() } else { selectedTab = 1 }
                 }
                 TabBarItem(icon: "bubbles.and.sparkles", label: "Ménage", isSelected: selectedTab == 2) {
-                    selectedTab = 2
+                    if selectedTab == 2 { onTabReselected() } else { selectedTab = 2 }
                 }
                 TabBarItem(icon: "chart.bar", label: "Dépenses", isSelected: selectedTab == 3) {
-                    selectedTab = 3
+                    if selectedTab == 3 { onTabReselected() } else { selectedTab = 3 }
                 }
                 TabBarItem(icon: "person", label: "Profil", isSelected: selectedTab == 4) {
-                    selectedTab = 4
+                    if selectedTab == 4 { onTabReselected() } else { selectedTab = 4 }
                 }
             }
             .padding(.horizontal, 8)
