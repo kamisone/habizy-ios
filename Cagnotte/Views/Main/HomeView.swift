@@ -141,7 +141,7 @@ struct HomeView: View {
                 coursesSection(data)
 
                 // Ménage section
-                menageSection
+                menageSectionView(data)
 
                 // Signalements section
                 if !data.recentReports.isEmpty {
@@ -329,37 +329,147 @@ struct HomeView: View {
 
     // MARK: - Ménage section
 
-    private var menageSection: some View {
+    private func menageSectionView(_ data: HomeViewModel.HomeData) -> some View {
         Button { showMenage = true } label: {
-            HStack(spacing: 14) {
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(Color.orange.opacity(0.12))
-                    .frame(width: 44, height: 44)
-                    .overlay {
-                        Image(systemName: "bubbles.and.sparkles")
-                            .foregroundColor(.orange)
-                            .font(.system(size: 18))
+            VStack(alignment: .leading, spacing: 0) {
+                // Header
+                HStack(spacing: 12) {
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(Color.orange.opacity(0.12))
+                        .frame(width: 44, height: 44)
+                        .overlay {
+                            Image(systemName: "bubbles.and.sparkles")
+                                .foregroundColor(.orange)
+                                .font(.system(size: 19))
+                        }
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Ménage")
+                            .font(.system(size: 17, weight: .semibold, design: .rounded))
+                            .foregroundColor(.darkText)
+                        Text("Cette semaine")
+                            .font(.system(size: 12))
+                            .foregroundColor(.subtitleText)
                     }
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("Ménage")
-                        .font(.system(size: 17, weight: .semibold, design: .rounded))
-                        .foregroundColor(.darkText)
-                    Text("Planifier et suivre le ménage")
-                        .font(.system(size: 12))
+                    Spacer()
+                    Image(systemName: "chevron.right")
                         .foregroundColor(.subtitleText)
+                        .font(.system(size: 14, weight: .semibold))
                 }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .foregroundColor(.subtitleText)
-                    .font(.system(size: 14, weight: .semibold))
+
+                if let menage = data.menage {
+                    // Personal status pill
+                    let done = menage.myDone
+                    let statusColor: Color = done ? .green : .orange
+
+                    HStack(spacing: 10) {
+                        Image(systemName: done ? "checkmark.circle.fill" : "bubbles.and.sparkles")
+                            .foregroundColor(statusColor)
+                            .font(.system(size: 18))
+                        Text(done ? "Tu as fait ton ménage !" : "À faire cette semaine")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(statusColor)
+                        Spacer()
+                        Text("\(menage.doneCount)/\(menage.totalCount)")
+                            .font(.system(size: 15, weight: .bold, design: .rounded))
+                            .foregroundColor(statusColor)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 11)
+                    .background(statusColor.opacity(0.1))
+                    .cornerRadius(14)
+                    .padding(.top, 16)
+
+                    // Progression
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text("Progression de la coloc")
+                                .font(.system(size: 12))
+                                .foregroundColor(.subtitleText)
+                            Spacer()
+                            Text("\(menage.doneCount) sur \(menage.totalCount)")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(.darkText)
+                        }
+                        GeometryReader { geo in
+                            ZStack(alignment: .leading) {
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(Color.gray.opacity(0.15))
+                                    .frame(height: 8)
+                                let fraction = menage.totalCount > 0
+                                    ? CGFloat(menage.doneCount) / CGFloat(menage.totalCount)
+                                    : 0
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(Color.green)
+                                    .frame(width: geo.size.width * fraction, height: 8)
+                            }
+                        }
+                        .frame(height: 8)
+                    }
+                    .padding(.top, 14)
+
+                    // Member avatars with status dots
+                    if !menage.board.isEmpty {
+                        HStack(spacing: 8) {
+                            ForEach(menage.board.prefix(7), id: \.userId) { member in
+                                ZStack(alignment: .bottomTrailing) {
+                                    RoommateAvatar(
+                                        colorHex: member.colorHex ?? "#888888",
+                                        initial: member.initial ?? String(member.name.prefix(1)).uppercased(),
+                                        size: 38,
+                                        cornerRadius: 12,
+                                        fontSize: 14
+                                    )
+                                    Circle()
+                                        .fill(Color.white)
+                                        .frame(width: 14, height: 14)
+                                        .overlay {
+                                            Circle()
+                                                .fill(member.done ? Color.green : Color.gray.opacity(0.35))
+                                                .padding(2)
+                                        }
+                                        .offset(x: 3, y: 3)
+                                }
+                            }
+                            if menage.board.count > 7 {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.gray.opacity(0.12))
+                                    .frame(width: 38, height: 38)
+                                    .overlay {
+                                        Text("+\(menage.board.count - 7)")
+                                            .font(.system(size: 12, weight: .bold))
+                                            .foregroundColor(.subtitleText)
+                                    }
+                            }
+                        }
+                        .padding(.top, 14)
+                    }
+
+                    // Task description
+                    if let task = menage.taskDescription, !task.isEmpty {
+                        Divider()
+                            .padding(.top, 14)
+                        HStack(alignment: .top, spacing: 6) {
+                            Image(systemName: "checkmark.square")
+                                .font(.system(size: 13))
+                                .foregroundColor(.subtitleText)
+                                .padding(.top, 1)
+                            Text(task)
+                                .font(.system(size: 13))
+                                .foregroundColor(.subtitleText)
+                                .lineLimit(2)
+                        }
+                        .padding(.top, 10)
+                    }
+                }
             }
-            .padding(16)
+            .padding(20)
             .background(Color.white)
             .cornerRadius(22)
             .shadow(color: .black.opacity(0.07), radius: 8, x: 0, y: 2)
         }
         .buttonStyle(.plain)
     }
+
 
     // MARK: - Signalements section
 

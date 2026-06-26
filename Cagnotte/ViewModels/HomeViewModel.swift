@@ -1,6 +1,14 @@
 import Foundation
 import SwiftUI
 
+struct MenageHomeData {
+    let myDone: Bool
+    let doneCount: Int
+    let totalCount: Int
+    let taskDescription: String?
+    let board: [MenageBoardMember]
+}
+
 @MainActor
 final class HomeViewModel: ObservableObject {
     struct HomeData {
@@ -16,6 +24,7 @@ final class HomeViewModel: ObservableObject {
         var daysUntilTurn: String
         var isMyTurn: Bool
         var isUserDisabled: Bool
+        var menage: MenageHomeData?
         var colocationId: String
         var recentReports: [ReportResponse]
     }
@@ -29,6 +38,7 @@ final class HomeViewModel: ObservableObject {
 
     @Published var state: HomeState = .loading
 
+    private let api: APIService
     private let colocationRepo: ColocationRepository
     private let shoppingRepo: ShoppingRepository
     private let rotationRepo: RotationRepository
@@ -39,6 +49,7 @@ final class HomeViewModel: ObservableObject {
     init(tokenManager: TokenManager) {
         self.tokenManager = tokenManager
         let api = APIService.configure(tokenManager: tokenManager)
+        self.api = api
         self.colocationRepo = ColocationRepository(api: api, tokenManager: tokenManager)
         self.shoppingRepo = ShoppingRepository(api: api)
         self.rotationRepo = RotationRepository(api: api)
@@ -65,13 +76,15 @@ final class HomeViewModel: ObservableObject {
             async let rotationTask = rotationRepo.getRotation(colocationId: colocationId)
             async let statsTask = receiptRepo.getStats(colocationId: colocationId)
             async let reportsTask = reportRepo.getReports(colocationId: colocationId)
+            async let menageTask = api.getMenageWeek(colocationId: colocationId)
 
             let shopping = (try? await shoppingTask) ?? []
             let rotation = (try? await rotationTask) ?? []
             let stats = try? await statsTask
             let reports = (try? await reportsTask) ?? []
+            let menageWeek = try? await menageTask
 
-            let me = try? await APIService.configure(tokenManager: tokenManager).getMe()
+            let me = try? await api.getMe()
             let userName = me?.name ?? detail.members.first?.user.name ?? "Utilisateur"
             let userId = me?.id ?? detail.members.first?.user.id
 
@@ -81,6 +94,19 @@ final class HomeViewModel: ObservableObject {
             let currentShopperInitial = currentEntry?.user.initial ?? String(currentShopperName.prefix(1)).uppercased()
 
             let isUserDisabled = rotation.first { $0.user.id == userId }?.isDisabled == true
+            let menage: MenageHomeData?
+            if let week = menageWeek {
+                let myEntry = week.board.first { $0.userId == userId }
+                menage = MenageHomeData(
+                    myDone: myEntry?.done ?? false,
+                    doneCount: week.totalDone,
+                    totalCount: week.totalMembers,
+                    taskDescription: week.taskDescription,
+                    board: week.board
+                )
+            } else {
+                menage = nil
+            }
             let daysUntilTurn = computeDaysUntilTurn(rotation: rotation, userId: userId)
             let mySpent = stats?.byRoommate.first { $0.user?.id == userId }?.total ?? 0
 
@@ -97,6 +123,7 @@ final class HomeViewModel: ObservableObject {
                 daysUntilTurn: daysUntilTurn,
                 isMyTurn: currentEntry?.user.id == userId,
                 isUserDisabled: isUserDisabled,
+                menage: menage,
                 colocationId: colocationId,
                 recentReports: Array(reports.prefix(5))
             )
