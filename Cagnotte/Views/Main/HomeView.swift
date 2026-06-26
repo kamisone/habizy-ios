@@ -129,16 +129,8 @@ struct HomeView: View {
                 // Spending summary card
                 spendingCard(data)
 
-                // Stat row
-                HStack(spacing: 12) {
-                    StatCard(label: "Mon tour",
-                             value: data.isUserDisabled ? "Désactivé" : data.daysUntilTurn,
-                             valueColor: data.isUserDisabled ? .subtitleText : .darkText)
-                    StatCard(label: "Mes dépenses", value: "-\(data.mySpent.euroFormatted)", valueColor: .coralRed)
-                }
-
-                // Faire les courses section
-                coursesSection(data)
+                // Les courses card
+                lesCoursesSection(data)
 
                 // Ménage section
                 menageSectionView(data)
@@ -156,28 +148,64 @@ struct HomeView: View {
         .refreshable { await vm.refresh() }
     }
 
-    // MARK: - Faire les courses section
+    // MARK: - Les courses card
 
-    private func coursesSection(_ data: HomeViewModel.HomeData) -> some View {
+    private func lesCoursesSection(_ data: HomeViewModel.HomeData) -> some View {
         VStack(spacing: 0) {
-            // Section header
+            // Header
             HStack(spacing: 10) {
-                RoundedRectangle(cornerRadius: 10)
+                RoundedRectangle(cornerRadius: 12)
                     .fill(Color.greenPrimary.opacity(0.12))
-                    .frame(width: 34, height: 34)
+                    .frame(width: 38, height: 38)
                     .overlay {
                         Image(systemName: "cart")
                             .foregroundColor(.greenPrimary)
-                            .font(.system(size: 15))
+                            .font(.system(size: 16, weight: .medium))
                     }
-                Text("Faire les courses")
-                    .font(.system(size: 17, weight: .semibold, design: .rounded))
+                Text("Les courses")
+                    .font(.system(size: 18, weight: .semibold, design: .rounded))
                     .foregroundColor(.darkText)
                 Spacer()
             }
-            .padding(16)
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
 
-            // Turn indicator (flat, no outer shadow)
+            // Stat boxes: Mon tour + Mes dépenses
+            HStack(spacing: 10) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Mon tour")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.subtitleText)
+                    Text(data.isUserDisabled ? "Désactivé" : (data.daysUntilTurn.isEmpty ? "—" : data.daysUntilTurn))
+                        .font(.system(size: 15, weight: .bold, design: .rounded))
+                        .foregroundColor(data.isUserDisabled ? .subtitleText : .darkText)
+                        .lineLimit(1)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(Color.screenBackground)
+                .cornerRadius(14)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Mes dépenses")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.subtitleText)
+                    Text("-\(data.mySpent.euroFormatted)")
+                        .font(.system(size: 15, weight: .bold, design: .rounded))
+                        .foregroundColor(.coralRed)
+                        .lineLimit(1)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(Color.screenBackground)
+                .cornerRadius(14)
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 14)
+
+            // Turn indicator
             Group {
                 if data.isMyTurn {
                     Button { showRotation = true } label: {
@@ -243,6 +271,7 @@ struct HomeView: View {
                 }
             }
             .padding(.horizontal, 16)
+            .padding(.top, 14)
 
             Divider().padding(.horizontal, 16).padding(.top, 14)
 
@@ -295,8 +324,8 @@ struct HomeView: View {
 
             // Statistiques + Historique buttons
             HStack(spacing: 10) {
-                sectionActionButton(icon: "chart.bar", label: "Statistiques", color: .purple) { showStats = true }
-                sectionActionButton(icon: "clock.arrow.circlepath", label: "Historique", color: .appBlue) { showHistory = true }
+                courseActionButton(icon: "chart.bar", label: "Statistiques", color: .purple) { showStats = true }
+                courseActionButton(icon: "clock.arrow.circlepath", label: "Historique", color: .appBlue) { showHistory = true }
             }
             .padding(.horizontal, 16)
             .padding(.top, 14)
@@ -308,7 +337,7 @@ struct HomeView: View {
     }
 
     @ViewBuilder
-    private func sectionActionButton(icon: String, label: String, color: Color, action: @escaping () -> Void) -> some View {
+    private func courseActionButton(icon: String, label: String, color: Color, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 8) {
                 Image(systemName: icon)
@@ -619,30 +648,6 @@ struct HomeView: View {
 }
 
 // MARK: - Supporting Views
-
-private struct StatCard: View {
-    let label: String
-    let value: String
-    let valueColor: Color
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(label)
-                .font(.system(size: 12, weight: .medium))
-                .foregroundColor(.subtitleText)
-            Text(value)
-                .font(.system(size: 18, weight: .semibold, design: .rounded))
-                .foregroundColor(valueColor)
-                .padding(.top, 2)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
-        .background(Color.white)
-        .cornerRadius(20)
-        .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
-    }
-}
 
 private struct QuickActionCard: View {
     let icon: String
