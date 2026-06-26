@@ -131,7 +131,9 @@ struct HomeView: View {
 
                 // Stat row
                 HStack(spacing: 12) {
-                    StatCard(label: "Mon tour", value: data.daysUntilTurn, valueColor: .darkText)
+                    StatCard(label: "Mon tour",
+                             value: data.isUserDisabled ? "Désactivé" : data.daysUntilTurn,
+                             valueColor: data.isUserDisabled ? .subtitleText : .darkText)
                     StatCard(label: "Mes dépenses", value: "-\(data.mySpent.euroFormatted)", valueColor: .coralRed)
                 }
 

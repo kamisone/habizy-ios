@@ -15,6 +15,7 @@ final class HomeViewModel: ObservableObject {
         var shoppingPreview: [ShoppingItemResponse]
         var daysUntilTurn: String
         var isMyTurn: Bool
+        var isUserDisabled: Bool
         var colocationId: String
         var recentReports: [ReportResponse]
     }
@@ -79,6 +80,7 @@ final class HomeViewModel: ObservableObject {
             let currentShopperColor = currentEntry?.user.colorHex ?? "#888888"
             let currentShopperInitial = currentEntry?.user.initial ?? String(currentShopperName.prefix(1)).uppercased()
 
+            let isUserDisabled = rotation.first { $0.user.id == userId }?.isDisabled == true
             let daysUntilTurn = computeDaysUntilTurn(rotation: rotation, userId: userId)
             let mySpent = stats?.byRoommate.first { $0.user?.id == userId }?.total ?? 0
 
@@ -94,6 +96,7 @@ final class HomeViewModel: ObservableObject {
                 shoppingPreview: Array(shopping.prefix(3)),
                 daysUntilTurn: daysUntilTurn,
                 isMyTurn: currentEntry?.user.id == userId,
+                isUserDisabled: isUserDisabled,
                 colocationId: colocationId,
                 recentReports: Array(reports.prefix(5))
             )
