@@ -31,6 +31,7 @@ struct AdminSettingsView: View {
             .padding(.vertical, 16)
             .padding(.bottom, 40)
         }
+        .scrollDismissesKeyboard(.interactively)
         .background(Color.screenBackground.ignoresSafeArea())
         .navigationTitle("Paramètres Admin")
         .navigationBarTitleDisplayMode(.large)

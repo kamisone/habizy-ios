@@ -103,6 +103,7 @@ struct CompleteProfileView: View {
             }
             .padding(.horizontal, 24)
         }
+        .scrollDismissesKeyboard(.interactively)
         .background(Color.screenBackground.ignoresSafeArea())
     }
 

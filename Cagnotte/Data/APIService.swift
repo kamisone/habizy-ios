@@ -369,11 +369,11 @@ final class APIService {
 
     func registerDevice(platform: String, token: String) async throws {
         struct Body: Encodable { let platform: String; let token: String }
-        try await requestVoid("devices/register", method: "POST", body: Body(platform: platform, token: token))
+        try await requestVoid("notifications/devices", method: "POST", body: Body(platform: platform, token: token))
     }
 
     func unregisterDevice(token: String) async throws {
-        try await requestVoid("devices/\(token)", method: "DELETE")
+        try await requestVoid("notifications/devices/\(token)", method: "DELETE")
     }
 
     // MARK: - Notification Endpoints

@@ -8,12 +8,14 @@ final class ExpensesViewModel: ObservableObject {
     @Published var isAdmin = false
     @Published var isMyTurn = true
     @Published var currentPurchaserName = ""
+    @Published var gapThreshold: Double = 50.0
     @Published var errorMessage: String?
     @Published var successMessage: String?
 
     private let receiptRepo: ReceiptRepository
     private let authRepo: AuthRepository
     private let rotationRepo: RotationRepository
+    private let colocationRepo: ColocationRepository
     private let tokenManager: TokenManager
 
     init(tokenManager: TokenManager) {
@@ -22,6 +24,7 @@ final class ExpensesViewModel: ObservableObject {
         self.receiptRepo = ReceiptRepository(api: api)
         self.authRepo = AuthRepository(api: api, tokenManager: tokenManager)
         self.rotationRepo = RotationRepository(api: api)
+        self.colocationRepo = ColocationRepository(api: api, tokenManager: tokenManager)
     }
 
     var colocationId: String? { tokenManager.colocationId }
@@ -39,7 +42,7 @@ final class ExpensesViewModel: ObservableObject {
         Task {
             do {
                 try await receiptRepo.deleteReceipt(id: id)
-                successMessage = "Ticket supprime"
+                successMessage = "Ticket supprimé"
                 await fetchData(showLoading: false)
             } catch {
                 errorMessage = error.localizedDescription
@@ -55,7 +58,13 @@ final class ExpensesViewModel: ObservableObject {
         async let statsTask = receiptRepo.getStats(colocationId: id)
         async let meTask = authRepo.getMe()
         async let rotationTask = rotationRepo.getRotation(colocationId: id)
-        receipts = (try? await receiptsTask) ?? []
+        async let colocationTask = colocationRepo.getMyColocation()
+
+        let fetched = (try? await receiptsTask) ?? []
+        receipts = fetched.sorted {
+            if $0.date != $1.date { return $0.date > $1.date }
+            return ($0.time ?? "") > ($1.time ?? "")
+        }
         stats = try? await statsTask
         let me = try? await meTask
         isAdmin = me?.isAdmin == true
@@ -63,5 +72,8 @@ final class ExpensesViewModel: ObservableObject {
         let currentPurchaser = rotation.first { $0.status == "current" }
         isMyTurn = currentPurchaser == nil || currentPurchaser?.user.id == me?.id
         currentPurchaserName = currentPurchaser?.user.name ?? ""
+        if let threshold = (try? await colocationTask)?.colocation.spendingGapThreshold, threshold > 0 {
+            gapThreshold = threshold
+        }
     }
 }

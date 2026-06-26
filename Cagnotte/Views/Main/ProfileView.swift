@@ -58,6 +58,7 @@ struct ProfileView: View {
                 .padding(.top, 16)
             }
             .refreshable { await vm.refresh() }
+            .scrollDismissesKeyboard(.interactively)
             .background(Color.screenBackground.ignoresSafeArea())
             .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar(.hidden, for: .navigationBar)

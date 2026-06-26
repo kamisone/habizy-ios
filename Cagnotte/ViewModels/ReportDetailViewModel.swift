@@ -19,7 +19,7 @@ final class ReportDetailViewModel: ObservableObject {
 
     var canEdit: Bool {
         guard let detail, let currentUser else { return false }
-        return currentUser.id == detail.user.id || currentUser.isAdmin
+        return currentUser.id == detail.user.id || currentUser.isAdmin == true
     }
 
     func load(reportId: String) {

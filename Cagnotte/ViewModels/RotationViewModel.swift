@@ -47,7 +47,7 @@ final class RotationViewModel: ObservableObject {
             entries = try await rotationTask
             let me = try await meTask
             currentUserId = me.id
-            isAdmin = me.isAdmin
+            isAdmin = me.isAdmin == true
             hasReordered = false
         } catch {
             errorMessage = error.localizedDescription

@@ -78,6 +78,7 @@ struct CagnotteApp: App {
             RootView()
                 .environmentObject(tokenManager)
                 .environmentObject(authViewModel)
+                .preferredColorScheme(.light)
         }
     }
 }

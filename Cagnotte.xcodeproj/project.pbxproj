@@ -139,6 +139,7 @@
 		F7EEBC7F30293587074073AC /* CreateUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserViewModel.swift; sourceTree = "<group>"; };
 		FF2BBF833BCC76A42AC0B5F9 /* ContributeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContributeViewModel.swift; sourceTree = "<group>"; };
 		GS001100220033GGSERVINFO /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		ENT001100220033AAENTITL00 /* Cagnotte.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Cagnotte.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,6 +292,7 @@
 				B3B3B3B300000001B3B3B3B3 /* logo_habizy.png */,
 				AF7E81887E39B71F777096A8 /* Info.plist */,
 				GS001100220033GGSERVINFO /* GoogleService-Info.plist */,
+				ENT001100220033AAENTITL00 /* Cagnotte.entitlements */,
 				AC001100220033AACASSETS00 /* Assets.xcassets */,
 				7B0F93C6E80BBD97C9EB4D0D /* App */,
 				F8ED6C7305E4DCCEE168491A /* Data */,
@@ -454,7 +456,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Cagnotte/Cagnotte.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = TH2W28MY37;
 				INFOPLIST_FILE = Cagnotte/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -529,7 +533,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Cagnotte/Cagnotte.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = TH2W28MY37;
 				INFOPLIST_FILE = Cagnotte/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;

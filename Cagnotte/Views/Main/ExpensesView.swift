@@ -74,20 +74,69 @@ struct ExpensesView: View {
     }
 
     private func statsSection(_ stats: ExpenseStatsResponse) -> some View {
-        VStack(spacing: 12) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Total dépensé")
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(.subtitleText)
-                    Text(stats.totalSpent.euroFormatted)
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .foregroundColor(.darkText)
+        let spendingGap: Double? = {
+            guard stats.byRoommate.count >= 2 else { return nil }
+            let totals = stats.byRoommate.map { $0.total }
+            return (totals.max() ?? 0) - (totals.min() ?? 0)
+        }()
+        let threshold = vm.gapThreshold
+        let gapColor: Color = {
+            guard let gap = spendingGap else { return .greenPrimary }
+            if gap >= threshold { return .coralRed }
+            if gap >= threshold * 0.5 { return .orange }
+            return .greenPrimary
+        }()
+        let gapLabel: String = {
+            guard let gap = spendingGap else { return "" }
+            if gap >= threshold { return "Déséquilibré" }
+            if gap >= threshold * 0.5 { return "Attention" }
+            return "Équilibré"
+        }()
+
+        return VStack(spacing: 12) {
+            VStack(spacing: 0) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Total dépensé")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundColor(.subtitleText)
+                        Text(stats.totalSpent.euroFormatted)
+                            .font(.system(size: 28, weight: .bold, design: .rounded))
+                            .foregroundColor(.darkText)
+                    }
+                    Spacer()
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(Color.greenPrimary.opacity(0.12))
+                            .frame(width: 48, height: 48)
+                        Image(systemName: "receipt")
+                            .font(.system(size: 22))
+                            .foregroundColor(.greenPrimary)
+                    }
                 }
-                Spacer()
-                Image(systemName: "receipt")
-                    .font(.system(size: 28))
-                    .foregroundColor(.greenPrimary)
+
+                if let gap = spendingGap {
+                    Divider()
+                        .padding(.vertical, 12)
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Écart entre colocataires")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(.subtitleText)
+                            Text(gapLabel)
+                                .font(.system(size: 11, weight: .semibold))
+                                .foregroundColor(gapColor)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(gapColor.opacity(0.12))
+                                .cornerRadius(8)
+                        }
+                        Spacer()
+                        Text(gap.euroFormatted)
+                            .font(.system(size: 22, weight: .bold, design: .rounded))
+                            .foregroundColor(gapColor)
+                    }
+                }
             }
             .padding(18)
             .background(Color.white)
@@ -187,10 +236,20 @@ struct ExpensesView: View {
                     .foregroundColor(.subtitleText)
                     .padding(.horizontal, 18)
             } else {
-                ForEach(vm.receipts) { receipt in
-                    ReceiptRow(receipt: receipt)
-                        .onTapGesture { selectedReceipt = receipt }
+                VStack(spacing: 0) {
+                    ForEach(Array(vm.receipts.enumerated()), id: \.element.id) { index, receipt in
+                        ReceiptRow(receipt: receipt)
+                            .onTapGesture { selectedReceipt = receipt }
+                        if index < vm.receipts.count - 1 {
+                            Divider()
+                                .padding(.horizontal, 16)
+                        }
+                    }
                 }
+                .background(Color.white)
+                .cornerRadius(22)
+                .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
+                .padding(.horizontal, 18)
             }
         }
     }
@@ -259,7 +318,7 @@ struct ReceiptDetailView: View {
                             Label(receipt.user.name, systemImage: "person")
                                 .font(.system(size: 13, weight: .medium))
                                 .foregroundColor(.subtitleText)
-                            if receipt.user.isAdmin {
+                            if receipt.user.isAdmin == true {
                                 HStack(spacing: 3) {
                                     Image(systemName: "star.fill")
                                         .font(.system(size: 8))
@@ -442,6 +501,7 @@ struct ReceiptRow: View {
                 Text(receipt.store)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(.darkText)
+                    .lineLimit(1)
                 Text(receipt.user.name)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundColor(.subtitleText)
@@ -449,8 +509,8 @@ struct ReceiptRow: View {
             Spacer()
             VStack(alignment: .trailing, spacing: 2) {
                 Text("−\(receipt.totalAmount.euroFormatted)")
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundColor(.darkText)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.coralRed)
                 Text(receipt.formattedDateTimeShort)
                     .font(.system(size: 11))
                     .foregroundColor(.lightText)
@@ -459,11 +519,8 @@ struct ReceiptRow: View {
                 .font(.system(size: 12, weight: .medium))
                 .foregroundColor(.lightText)
         }
-        .padding(14)
-        .background(Color.white)
-        .cornerRadius(18)
-        .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 2)
-        .padding(.horizontal, 18)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
     }
 }
 

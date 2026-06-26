@@ -116,6 +116,7 @@ struct LoginView: View {
                 .background(Color.screenBackground)
             }
         }
+        .scrollDismissesKeyboard(.interactively)
         .background(Color.screenBackground.ignoresSafeArea())
         .onChange(of: authViewModel.loginError) { err in
             loginError = err

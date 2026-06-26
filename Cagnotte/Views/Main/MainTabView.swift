@@ -12,6 +12,7 @@ struct MainTabView: View {
     @EnvironmentObject var tokenManager: TokenManager
     @State private var selectedTab = 0
     @StateObject private var tabBarVisibility = TabBarVisibility()
+    @State private var isKeyboardVisible = false
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -36,14 +37,19 @@ struct MainTabView: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
             .background(Color.screenBackground)
 
-            if tabBarVisibility.isVisible {
+            if tabBarVisibility.isVisible && !isKeyboardVisible {
                 CustomTabBar(selectedTab: $selectedTab, onTabReselected: {
                     NotificationCenter.default.post(name: .popToTabRoot, object: nil)
                 })
             }
         }
         .environmentObject(tabBarVisibility)
-        .ignoresSafeArea(.keyboard)
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+            isKeyboardVisible = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+            isKeyboardVisible = false
+        }
     }
 }
 

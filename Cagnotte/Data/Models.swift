@@ -30,7 +30,7 @@ struct UserResponse: Decodable, Identifiable {
     let colorHex: String?
     let initial: String?
     let phone: String?
-    let isAdmin: Bool
+    let isAdmin: Bool?
     let profileCompleted: Bool?
 }
 

@@ -73,6 +73,7 @@ struct CreateUserView: View {
             .padding(.horizontal, 18)
             .padding(.vertical, 16)
         }
+        .scrollDismissesKeyboard(.interactively)
         .background(Color.screenBackground.ignoresSafeArea())
         .navigationTitle("Nouveau colocataire")
         .navigationBarTitleDisplayMode(.inline)

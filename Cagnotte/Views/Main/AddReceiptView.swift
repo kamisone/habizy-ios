@@ -284,6 +284,7 @@ struct AddReceiptView: View {
                 .padding(.horizontal, 18)
                 .padding(.vertical, 16)
             }
+            .scrollDismissesKeyboard(.interactively)
             .background(Color.screenBackground.ignoresSafeArea())
             .navigationTitle("Nouveau ticket")
             .navigationBarTitleDisplayMode(.inline)

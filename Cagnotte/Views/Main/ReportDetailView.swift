@@ -188,6 +188,7 @@ private struct EditReportSheet: View {
                         Text("Description").font(.system(size: 13, weight: .medium)).foregroundColor(.subtitleText)
                         TextEditor(text: $description)
                             .frame(height: 100).padding(8)
+                            .scrollContentBackground(.hidden)
                             .background(Color.white).cornerRadius(14)
                             .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.borderColor, lineWidth: 1))
                     }

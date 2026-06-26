@@ -41,7 +41,7 @@ final class MembersViewModel: ObservableObject {
             members = detail.members
             colocationId = detail.colocation.id
             currentUserId = me.id
-            isAdmin = detail.members.first(where: { $0.user.id == me.id })?.role == "admin" || me.isAdmin
+            isAdmin = detail.members.first(where: { $0.user.id == me.id })?.role == "admin" || me.isAdmin == true
         } catch {
             errorMessage = error.localizedDescription
         }
