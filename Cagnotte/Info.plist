@@ -29,10 +29,6 @@
 	<string>Photographier vos tickets de caisse pour les ajouter facilement.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Sélectionner une photo de ticket depuis votre galerie.</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
 </dict>

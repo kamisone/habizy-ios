@@ -4,6 +4,10 @@ options:
   deploymentTarget:
     iOS: "17.0"
   xcodeVersion: "16.0"
+packages:
+  FirebaseSDK:
+    url: https://github.com/firebase/firebase-ios-sdk
+    exactVersion: "12.15.0"
 targets:
   Cagnotte:
     type: application
@@ -11,6 +15,11 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - Cagnotte
+    dependencies:
+      - package: FirebaseSDK
+        product: FirebaseCore
+      - package: FirebaseSDK
+        product: FirebaseMessaging
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.cagnotte
@@ -20,8 +29,8 @@ targets:
     info:
       path: Cagnotte/Info.plist
       properties:
-        CFBundleName: Cagnotte
-        CFBundleDisplayName: Cagnotte Coloc
+        CFBundleName: Habizy
+        CFBundleDisplayName: Habizy
         CFBundleShortVersionString: "1.0"
         CFBundleVersion: "1"
         UILaunchScreen: {}
