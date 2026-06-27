@@ -1,129 +1,82 @@
 import SwiftUI
 
 struct LoginView: View {
-    @EnvironmentObject var tokenManager: TokenManager
     @EnvironmentObject var authViewModel: AuthViewModel
 
     @State private var email = ""
     @State private var password = ""
-    @State private var inviteCode = ""
     @State private var loginError: String?
-    @State private var joinError: String?
 
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                // Logo + app name
-                VStack(spacing: 10) {
-                    if let uiImage = UIImage(named: "logo_habizy") {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 88, height: 88)
-                            .clipShape(RoundedRectangle(cornerRadius: 22))
-                    }
-                    Text("Habizy")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .foregroundStyle(
-                            LinearGradient(
-                                colors: [
-                                    Color(hex: "#17C97E"),
-                                    Color(hex: "#00B4D8"),
-                                    Color(hex: "#6C63FF"),
-                                    Color(hex: "#E040A0"),
-                                ],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                }
-                .padding(.top, 32)
-                .padding(.bottom, 16)
+                AuthLogoHeader()
 
-                VStack(spacing: 16) {
-                    // Login section
-                    VStack(alignment: .leading, spacing: 14) {
-                        Text("Connexion")
-                            .font(.system(size: 22, weight: .semibold, design: .rounded))
-                            .foregroundColor(.darkText)
+                VStack(alignment: .leading, spacing: 14) {
+                    Text("Connexion")
+                        .font(.system(size: 22, weight: .semibold, design: .rounded))
+                        .foregroundColor(.darkText)
 
-                        AppTextField(placeholder: "Email", text: $email)
-                            .keyboardType(.emailAddress)
-                            .autocapitalization(.none)
+                    AppTextField(placeholder: "Email", text: $email)
+                        .keyboardType(.emailAddress)
+                        .autocapitalization(.none)
 
-                        AppTextField(placeholder: "Mot de passe", text: $password, isSecure: true)
+                    AppTextField(placeholder: "Mot de passe", text: $password, isSecure: true)
 
-                        if let err = loginError {
-                            Text(err)
-                                .font(.caption)
-                                .foregroundColor(.coralRed)
-                        }
-
-                        PrimaryButton(
-                            title: "Se connecter",
-                            isLoading: authViewModel.isLoginLoading,
-                            disabled: email.isEmpty || password.isEmpty
-                        ) {
-                            loginError = nil
-                            authViewModel.login(email: email, password: password)
-                        }
+                    if let err = loginError {
+                        Text(err).font(.caption).foregroundColor(.coralRed)
                     }
 
-                    // Divider
-                    HStack(spacing: 12) {
-                        Rectangle().fill(Color.dividerColor).frame(height: 1)
-                        Text("ou")
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundColor(.lightText)
-                        Rectangle().fill(Color.dividerColor).frame(height: 1)
+                    PrimaryButton(
+                        title: "Se connecter",
+                        isLoading: authViewModel.isLoginLoading,
+                        disabled: email.isEmpty || password.isEmpty
+                    ) {
+                        loginError = nil
+                        authViewModel.login(email: email, password: password)
                     }
-                    .padding(.vertical, 8)
-
-                    // Join section
-                    VStack(alignment: .leading, spacing: 14) {
-                        Text("Rejoindre une colocation")
-                            .font(.system(size: 22, weight: .semibold, design: .rounded))
-                            .foregroundColor(.darkText)
-
-                        Text("Entre ton code d'invitation pour rejoindre la coloc sans compte.")
-                            .font(.system(size: 13))
-                            .foregroundColor(.subtitleText)
-
-                        AppTextField(placeholder: "Code d'invitation", text: $inviteCode)
-                            .autocapitalization(.allCharacters)
-
-                        if let err = joinError {
-                            Text(err)
-                                .font(.caption)
-                                .foregroundColor(.coralRed)
-                        }
-
-                        PrimaryButton(
-                            title: "Rejoindre",
-                            isLoading: authViewModel.isJoinLoading,
-                            disabled: inviteCode.isEmpty,
-                            style: .dark
-                        ) {
-                            joinError = nil
-                            authViewModel.joinColocation(inviteCode: inviteCode.trimmingCharacters(in: .whitespaces))
-                        }
-                    }
-
-                    Spacer(minLength: 32)
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 28)
-                .background(Color.screenBackground)
+                .padding(.bottom, 40)
             }
         }
         .scrollDismissesKeyboard(.interactively)
         .background(Color.screenBackground.ignoresSafeArea())
-        .onChange(of: authViewModel.loginError) { err in
-            loginError = err
+        .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: authViewModel.loginError) { err in loginError = err }
+    }
+}
+
+// MARK: - Shared Auth Components
+
+struct AuthLogoHeader: View {
+    var body: some View {
+        VStack(spacing: 10) {
+            if let uiImage = UIImage(named: "logo_habizy") {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 80, height: 80)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+            }
+            Text("Habizy")
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [
+                            Color(hex: "#17C97E"),
+                            Color(hex: "#00B4D8"),
+                            Color(hex: "#6C63FF"),
+                            Color(hex: "#E040A0"),
+                        ],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
         }
-        .onChange(of: authViewModel.joinError) { err in
-            joinError = err
-        }
+        .padding(.top, 32)
+        .padding(.bottom, 16)
     }
 }
 

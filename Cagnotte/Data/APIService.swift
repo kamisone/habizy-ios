@@ -223,6 +223,10 @@ final class APIService {
         try await request("auth/register", method: "POST", body: body, auth: false)
     }
 
+    func registerAdmin(body: RegisterRequest) async throws -> CreateUserResponse {
+        try await request("auth/register-admin", method: "POST", body: body, auth: false)
+    }
+
     func login(body: LoginRequest) async throws -> AuthResponse {
         try await request("auth/login", method: "POST", body: body, auth: false)
     }

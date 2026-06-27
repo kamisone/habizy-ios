@@ -12,7 +12,16 @@ struct RootView: View {
             Color.screenBackground.ignoresSafeArea()
 
             if !tokenManager.isLoggedIn {
-                LoginView()
+                NavigationStack {
+                    WelcomeView()
+                        .navigationDestination(for: AuthRoute.self) { route in
+                            switch route {
+                            case .login:    LoginView()
+                            case .register: RegisterView()
+                            case .join:     JoinView()
+                            }
+                        }
+                }
             } else if tokenManager.profileCompleted == false {
                 CompleteProfileView()
             } else {

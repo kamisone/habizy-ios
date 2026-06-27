@@ -16,6 +16,15 @@ final class AuthRepository {
         return response
     }
 
+    func registerAdmin(name: String, email: String, password: String) async throws {
+        _ = try await api.registerAdmin(body: RegisterRequest(name: name, email: email, password: password))
+        let loginResponse = try await api.login(body: LoginRequest(email: email, password: password))
+        tokenManager.saveAuthResponse(loginResponse)
+        if loginResponse.profileCompleted == nil {
+            tokenManager.saveProfileCompleted(true)
+        }
+    }
+
     func joinColocation(inviteCode: String) async throws -> AuthResponse {
         let response = try await api.joinColocation(body: JoinColocationRequest(inviteCode: inviteCode))
         tokenManager.saveTokens(accessToken: response.accessToken, refreshToken: response.refreshToken)

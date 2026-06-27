@@ -5,8 +5,10 @@ import SwiftUI
 final class AuthViewModel: ObservableObject {
     @Published var isLoginLoading = false
     @Published var isJoinLoading = false
+    @Published var isRegisterLoading = false
     @Published var loginError: String?
     @Published var joinError: String?
+    @Published var registerError: String?
 
     private var tokenManager: TokenManager?
     private var authRepo: AuthRepository?
@@ -66,6 +68,21 @@ final class AuthViewModel: ObservableObject {
               let fcmToken = UserDefaults.standard.string(forKey: "fcm_token") else { return }
         let api = APIService.configure(tokenManager: tm)
         try? await api.registerDevice(platform: "ios", token: fcmToken)
+    }
+
+    func registerAdmin(name: String, email: String, password: String) {
+        guard let repo = authRepo else { return }
+        isRegisterLoading = true
+        registerError = nil
+        Task {
+            defer { isRegisterLoading = false }
+            do {
+                try await repo.registerAdmin(name: name, email: email, password: password)
+                await registerFcmToken()
+            } catch {
+                registerError = error.localizedDescription
+            }
+        }
     }
 
     func deleteAccountAndLogout() {
