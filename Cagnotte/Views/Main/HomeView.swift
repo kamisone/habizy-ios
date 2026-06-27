@@ -239,7 +239,7 @@ struct HomeView: View {
                         .cornerRadius(16)
                     }
                     .buttonStyle(.plain)
-                } else {
+                } else if !data.currentShopperName.isEmpty {
                     Button { showRotation = true } label: {
                         HStack(spacing: 12) {
                             Text(data.currentShopperInitial)
@@ -266,6 +266,39 @@ struct HomeView: View {
                                            startPoint: .leading, endPoint: .trailing)
                         )
                         .cornerRadius(16)
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Button { showRotation = true } label: {
+                        HStack(spacing: 12) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 13)
+                                    .fill(Color.borderColor.opacity(0.3))
+                                    .frame(width: 40, height: 40)
+                                Image(systemName: "arrow.triangle.2.circlepath")
+                                    .font(.system(size: 17, weight: .semibold))
+                                    .foregroundColor(.subtitleText)
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Ordre non configuré")
+                                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.darkText)
+                                Text("Configurer l'ordre de passage")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.subtitleText)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.subtitleText)
+                                .font(.system(size: 13, weight: .semibold))
+                        }
+                        .padding(14)
+                        .background(Color.screenBackground)
+                        .cornerRadius(16)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.borderColor, lineWidth: 1)
+                        )
                     }
                     .buttonStyle(.plain)
                 }

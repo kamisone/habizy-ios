@@ -89,7 +89,7 @@ final class HomeViewModel: ObservableObject {
             let userId = me?.id ?? detail.members.first?.user.id
 
             let currentEntry = rotation.first { $0.status == "current" }
-            let currentShopperName = currentEntry?.user.name ?? "---"
+            let currentShopperName = currentEntry?.user.name ?? ""
             let currentShopperColor = currentEntry?.user.colorHex ?? "#888888"
             let currentShopperInitial = currentEntry?.user.initial ?? String(currentShopperName.prefix(1)).uppercased()
 
