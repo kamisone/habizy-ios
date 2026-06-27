@@ -617,6 +617,17 @@ struct HomeView: View {
                                 .foregroundColor(.subtitleText)
                         }
                         Spacer()
+                        if let count = report.commentCount, count > 0 {
+                            HStack(spacing: 3) {
+                                Image(systemName: "bubble.left")
+                                    .font(.system(size: 11))
+                                    .foregroundColor(.subtitleText)
+                                Text("\(count)")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.subtitleText)
+                            }
+                            .padding(.trailing, 6)
+                        }
                         Image(systemName: "chevron.right")
                             .foregroundColor(.subtitleText)
                             .font(.system(size: 13))
