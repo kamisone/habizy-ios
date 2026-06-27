@@ -580,11 +580,38 @@ struct HomeView: View {
                                     }
                             }
                         }
-                        VStack(alignment: .leading, spacing: 3) {
+                        VStack(alignment: .leading, spacing: 4) {
                             Text(report.title)
                                 .font(.system(size: 14, weight: .semibold))
                                 .foregroundColor(.darkText)
                                 .lineLimit(1)
+                            if let details = report.tagDetails?.prefix(3), !details.isEmpty {
+                                HStack(spacing: 4) {
+                                    ForEach(Array(details), id: \.title) { detail in
+                                        let c = detail.color.flatMap { Color(hex: $0) } ?? tagColor(detail.title)
+                                        Text(detail.title)
+                                            .font(.system(size: 10, weight: .semibold))
+                                            .foregroundColor(c)
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 2)
+                                            .background(c.opacity(0.13))
+                                            .cornerRadius(6)
+                                    }
+                                }
+                            } else if let tags = report.tags?.prefix(3), !tags.isEmpty {
+                                HStack(spacing: 4) {
+                                    ForEach(Array(tags), id: \.self) { tag in
+                                        let c = tagColor(tag)
+                                        Text(tag)
+                                            .font(.system(size: 10, weight: .semibold))
+                                            .foregroundColor(c)
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 2)
+                                            .background(c.opacity(0.13))
+                                            .cornerRadius(6)
+                                    }
+                                }
+                            }
                             Text("\(report.user.name) · \(formatTimeAgo(report.createdAt))")
                                 .font(.system(size: 12))
                                 .foregroundColor(.subtitleText)

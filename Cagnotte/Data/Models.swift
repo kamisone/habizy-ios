@@ -293,11 +293,17 @@ struct RotationEntryResponse: Decodable, Identifiable {
 
 // MARK: - Report Models
 
+struct TagDetail: Decodable {
+    let title: String
+    let color: String?
+}
+
 struct ReportResponse: Decodable, Identifiable {
     let id: String
     let title: String
     let description: String?
     let tags: [String]?
+    let tagDetails: [TagDetail]?
     let photoUrls: [String]?
     let user: UserResponse
     let colocationId: String
@@ -318,6 +324,7 @@ struct ReportDetailResponse: Decodable {
     let title: String
     let description: String?
     let tags: [String]?
+    let tagDetails: [TagDetail]?
     let photoUrls: [String]?
     let user: UserResponse
     let colocationId: String
